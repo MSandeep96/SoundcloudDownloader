@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Soundown</string>
+    <string name="action_settings">Settings</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_playlist_open">PlaylistOpen</string>
+    <string name="title_activity_user_open">UserOpen</string>
+</resources>
