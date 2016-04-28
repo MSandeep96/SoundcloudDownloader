@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="150dp"
+    app:cardUseCompatPadding="true">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="10dp">
+
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/artwork_iv_pi"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:scaleType="centerCrop"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:id="@+id/artistn_tv_pi"
+            android:layout_alignTop="@+id/artwork_iv_pi"
+            android:layout_toRightOf="@+id/artwork_iv_pi"
+            android:layout_toEndOf="@+id/artwork_iv_pi" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="17sp"
+            android:id="@+id/title_tv_pi"
+            android:layout_below="@+id/artistn_tv_pi"
+            android:layout_toRightOf="@+id/artwork_iv_pi"
+            android:layout_toEndOf="@+id/artwork_iv_pi"
+            android:maxLines="3"
+            android:ellipsize="end"/>
+
+        <ImageButton
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:tint="@color/grey_hex_66"
+            android:id="@+id/openplay_ib_pi"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:src="@drawable/open_playlist"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:id="@+id/tracks_tv_pi"
+            android:layout_alignBottom="@+id/artwork_iv_pi"
+            android:layout_toRightOf="@+id/artwork_iv_pi"
+            android:layout_toEndOf="@+id/artwork_iv_pi"
+            />
+    </RelativeLayout>
+</android.support.v7.widget.CardView>

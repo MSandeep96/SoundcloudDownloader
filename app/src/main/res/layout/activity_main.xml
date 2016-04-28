@@ -12,23 +12,27 @@
         android:layout_height="wrap_content"
         android:theme="@style/AppTheme.AppBarOverlay">
 
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_gravity="top"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
+
+        <com.gigamole.library.NavigationTabBar
+            android:id="@+id/ntb_main"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="48dp"
             android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            app:ntb_active_color="@color/colorPrimary"
+            app:ntb_animation_duration="400"
+            app:ntb_inactive_color="@color/colorWhite"
+            app:ntb_title_mode="active"
+            app:ntb_titled="true" />
 
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_main" />
-
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
-
 </android.support.design.widget.CoordinatorLayout>
