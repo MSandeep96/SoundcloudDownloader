@@ -9,6 +9,7 @@ import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,6 +24,7 @@ import com.sande.soundown.Fragments.Feeds;
 import com.sande.soundown.Fragments.Likes;
 import com.sande.soundown.Fragments.Playlists;
 import com.sande.soundown.Fragments.Profile;
+import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.R;
 import com.crashlytics.android.Crashlytics;
 import com.sande.soundown.Utils.UtilsManager;
@@ -31,7 +33,9 @@ import java.util.ArrayList;
 
 import io.fabric.sdk.android.Fabric;
 
-public class MainActivity extends AppCompatActivity implements SharedPreferences.OnSharedPreferenceChangeListener {
+public class MainActivity extends AppCompatActivity implements CallBackMain {
+
+    private ViewPager mViewpager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +56,10 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
         models.add(new NavigationTabBar.Model(ContextCompat.getDrawable(this,R.drawable.feed),ContextCompat.getColor(this,R.color.colorWhite),"Feed"));
         models.add(new NavigationTabBar.Model(ContextCompat.getDrawable(this,R.drawable.profile),ContextCompat.getColor(this,R.color.colorWhite),"Profile"));
         ntb.setModels(models);
-        ViewPager mViewpager=(ViewPager)findViewById(R.id.vp_main);
+        mViewpager=(ViewPager)findViewById(R.id.pager);
         MyFragAdapter mAdapter=new MyFragAdapter(getSupportFragmentManager());
         mViewpager.setAdapter(mAdapter);
-        mViewpager.setOffscreenPageLimit(3);
+        mViewpager.setOffscreenPageLimit(5);
         ntb.setViewPager(mViewpager);
     }
 
@@ -79,11 +83,11 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-
+    public void setViewPager(int item) {
+        mViewpager.setCurrentItem(item,true);
     }
 
-    class MyFragAdapter extends FragmentPagerAdapter{
+    class MyFragAdapter extends FragmentStatePagerAdapter{
 
         public MyFragAdapter(FragmentManager fm) {
             super(fm);
@@ -95,7 +99,8 @@ public class MainActivity extends AppCompatActivity implements SharedPreferences
                 case 0:return new Likes();
                 case 1:return new Playlists();
                 case 2:return new Feeds();
-                default:return new Profile();
+                case 3:return new Profile();
+                default:return null;
             }
         }
 

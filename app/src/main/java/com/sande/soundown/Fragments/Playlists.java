@@ -56,6 +56,7 @@ public class Playlists extends Fragment implements ApiCons{
         mAdapter=new PlaylistsAdapter(getContext());
         final LinearLayoutManager mLLM=new LinearLayoutManager(getContext());
         mRecy.setAdapter(mAdapter);
+        mRecy.setLayoutManager(mLLM);
         mRecy.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {

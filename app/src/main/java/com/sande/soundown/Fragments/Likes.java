@@ -80,10 +80,6 @@ public class Likes extends Fragment implements ApiCons{
                     }
                     Gson gson=new GsonBuilder().create();
                     mLikes=new ArrayList<>(Arrays.asList(gson.fromJson(response.getJSONArray(COLLECTION).toString(),LikesObject[].class)));
-                    if(mLikes.size()<=PAGINATION_LIMIT) {
-                        mAdapter.setScrollable(false);
-                        isScrollable=false;
-                    }
                     mAdapter.addLikesObjects(mLikes);
                 } catch (JSONException e) {
                     e.printStackTrace();

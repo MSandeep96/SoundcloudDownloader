@@ -22,6 +22,15 @@ public interface ApiCons{
     String SET_LIMIT="&limit=35";
     String PLAYLISTS="/playlists?";
     String PLAYLISTS_USER="https://api.soundcloud.com/playlists/";
+    String TYPE_TRACK="&type=track";
+    String GET_FEED="https://api.soundcloud.com/me/activities?type=track";
+
+    String AVATAR="avatar_url";
+    String USERNAME="username";
+    String FAV_COUNT="public_favorites_count";
+    String PLAYLISTCNT="playlist_count";
+    String FOLLOWERCNT="followers_count";
+    String FOLLOWINGCNT="followings_count";
 
     String NEXT_HREF="next_href";
     String COLLECTION="collection";

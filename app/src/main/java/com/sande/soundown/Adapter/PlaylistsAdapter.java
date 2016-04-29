@@ -67,7 +67,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         if (viewType == VIEW_TYPE) {
             View mView = mLayoutInflater.inflate(R.layout.playlists_item, parent, false);
-            return new LikesViewHolder(mView);
+            return new PlaylistsViewHolder(mView);
         } else {
             LinearLayout mLinearLayout = new LinearLayout(mContext);
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -83,13 +83,13 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
         // TODO: 28-Apr-16 hooooly shit
-        if (holder instanceof LikesViewHolder) {
-            ((LikesViewHolder) holder).artwork.setImageUrl(items.get(position).getUri(), mImageLoader);
-            ((LikesViewHolder) holder).title.setText(items.get(position).getTitle());
-            ((LikesViewHolder) holder).created_by.setText(items.get(position).getUser().getUsername());
+        if (holder instanceof PlaylistsViewHolder) {
+            ((PlaylistsViewHolder) holder).artwork.setImageUrl(items.get(position).getUri(), mImageLoader);
+            ((PlaylistsViewHolder) holder).title.setText(items.get(position).getTitle());
+            ((PlaylistsViewHolder) holder).created_by.setText(items.get(position).getUser().getUsername());
             String trackCount = "Tracks : "+items.get(position).getTrack_count();
-            ((LikesViewHolder) holder).track_count.setText(trackCount);
-            ((LikesViewHolder) holder).openbtn.setOnClickListener(new View.OnClickListener() {
+            ((PlaylistsViewHolder) holder).track_count.setText(trackCount);
+            ((PlaylistsViewHolder) holder).openbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     // TODO: 29-Apr-16 dsfs
@@ -114,19 +114,19 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
-        if (holder instanceof LikesViewHolder) {
-            ((LikesViewHolder) holder).artwork.setImageResource(0);
+        if (holder instanceof PlaylistsViewHolder) {
+            ((PlaylistsViewHolder) holder).artwork.setImageResource(0);
         }
     }
 
-    public static class LikesViewHolder extends RecyclerView.ViewHolder {
+    public static class PlaylistsViewHolder extends RecyclerView.ViewHolder {
         NetworkImageView artwork;
         TextView title;
         TextView created_by;
         TextView track_count;
         ImageButton openbtn;
 
-        public LikesViewHolder(View itemView) {
+        public PlaylistsViewHolder(View itemView) {
             super(itemView);
             artwork = (NetworkImageView) itemView.findViewById(R.id.artwork_iv_pi);
             title = (TextView) itemView.findViewById(R.id.title_tv_pi);

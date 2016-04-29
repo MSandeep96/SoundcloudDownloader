@@ -52,4 +52,5 @@ dependencies {
     compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'com.github.medyo:dynamicbox:1.2@aar'
+    compile 'de.hdodenhof:circleimageview:2.0.0'
 }
