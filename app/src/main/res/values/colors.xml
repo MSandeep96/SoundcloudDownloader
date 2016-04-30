@@ -6,4 +6,6 @@
     <color name="colorWhite">#fff</color>
     <color name="colorTransBlack">#9000</color>
     <color name="strokecolor">#808080</color>
+    <color name="colorTransWhite">#2fff</color>
+    <color name="colorTransWhiteBorder">#4fff</color>
 </resources>

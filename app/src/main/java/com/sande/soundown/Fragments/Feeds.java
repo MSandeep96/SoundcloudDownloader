@@ -17,9 +17,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sande.soundown.Adapter.LikesAdapter;
+import com.sande.soundown.Adapter.TracksAdapter;
 import com.sande.soundown.GsonFiles.FeedObject;
-import com.sande.soundown.GsonFiles.LikesObject;
+import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
@@ -40,7 +40,7 @@ import mehdi.sakout.dynamicbox.DynamicBox;
 public class Feeds extends Fragment implements ApiCons{
 
 
-    private LikesAdapter mAdapter;
+    private TracksAdapter mAdapter;
     private boolean isScrollable=true;
     private boolean loading;
     private DynamicBox box;
@@ -66,7 +66,7 @@ public class Feeds extends Fragment implements ApiCons{
         mRecy.setLayoutManager(mLLM);
         box=new DynamicBox(getContext(),mRecy);
         box.showLoadingLayout();
-        mAdapter=new LikesAdapter(getContext());
+        mAdapter=new TracksAdapter(getContext());
         mRecy.setAdapter(mAdapter);
         mRecy.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -100,7 +100,7 @@ public class Feeds extends Fragment implements ApiCons{
             public void onResponse(JSONObject response) {
                 loading=false;
                 box.hideAll();
-                ArrayList<LikesObject> mFeed=new ArrayList<>();
+                ArrayList<TrackObject> mFeed=new ArrayList<>();
                 try {
                     if(response.has(NEXT_HREF)) {
                         mUrlFeed = response.getString(NEXT_HREF)+"&"+OAUTH_TOKEN_URI+UtilsManager.getAccessToken(getContext());

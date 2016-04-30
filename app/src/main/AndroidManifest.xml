@@ -28,7 +28,10 @@
             android:name="io.fabric.ApiKey"
             android:value="af2b51e6691d1e04ae5c975ab2d4196ef37afcd0" />
 
-        <activity android:name=".Activities.LoginActivity" />
+        <activity
+            android:theme="@style/AppTheme.NoTitle"
+            android:label="Login"
+            android:name=".Activities.LoginActivity" />
         <activity
             android:name=".Activities.PlaylistOpen"
             android:label="@string/title_activity_playlist_open"

@@ -1,6 +1,8 @@
 package com.sande.soundown.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,7 +15,8 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.sande.soundown.GsonFiles.LikesObject;
+import com.sande.soundown.GsonFiles.TrackObject;
+import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.UtilsManager;
@@ -23,24 +26,24 @@ import java.util.ArrayList;
 /**
  * Created by Sandeep on 28-Apr-16.
  */
-public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private final LayoutInflater mLayoutInflater;
     private Context mContext;
     public static final int VIEW_TYPE = 0;
     public static final int LOAD_TYPE = 1;
     private ImageLoader mImageLoader;
-    private boolean isScrollable=true;
-    private ArrayList<LikesObject> items = new ArrayList<>();
+    private boolean isScrollable = true;
+    private ArrayList<TrackObject> items = new ArrayList<>();
 
-    public LikesAdapter(Context context) {
+    public TracksAdapter(Context context) {
         mLayoutInflater = LayoutInflater.from(context);
         mContext = context;
         VolleySingleton mSingleton = VolleySingleton.getInstance(context);
         mImageLoader = mSingleton.getImageLoader();
     }
 
-    public void addLikesObjects(ArrayList<LikesObject> mLikes) {
+    public void addLikesObjects(ArrayList<TrackObject> mLikes) {
         if (items.size() == 0) {
             items = mLikes;
         } else {
@@ -80,14 +83,14 @@ public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         // TODO: 28-Apr-16 hooooly shit
         if (holder instanceof LikesViewHolder) {
             ((LikesViewHolder) holder).artwork.setImageUrl(items.get(position).getArtwork_url(), mImageLoader);
             ((LikesViewHolder) holder).title.setText(items.get(position).getTitle());
             ((LikesViewHolder) holder).artist.setText(items.get(position).getUser().getUsername());
             int dur = items.get(position).getDuration();
-            String dura = String.format("%02d",dur / (60 * 1000)) + ":" + String.format("%02d",(dur / 1000) % (60));
+            String dura = String.format("%02d", dur / (60 * 1000)) + ":" + String.format("%02d", (dur / 1000) % (60));
             ((LikesViewHolder) holder).duration.setText(dura);
             boolean fileExists = UtilsManager.doesSongExist(items.get(position).getTitle());
             if (items.get(position).isStreamable()) {
@@ -97,6 +100,22 @@ public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
                     ((LikesViewHolder) holder).downbtn.setVisibility(View.VISIBLE);
                 }
             }
+            ((LikesViewHolder) holder).downbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((CallBackMain)mContext).enqueueDownload(items.get(position));
+                }
+            });
+            ((LikesViewHolder) holder).playbtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent();
+                    intent.setAction(android.content.Intent.ACTION_VIEW);
+                    intent.setDataAndType(Uri.fromFile(UtilsManager.getSongFile(items.get(position).getTitle())), "audio/*");
+                    mContext.startActivity(intent);
+
+                }
+            });
 
         }
 
@@ -107,9 +126,9 @@ public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         if (items.size() == 0) {
             return 0;
         }
-        if(isScrollable) {
+        if (isScrollable) {
             return items.size() + 1;
-        }else{
+        } else {
             return items.size();
         }
     }
@@ -135,6 +154,7 @@ public class LikesAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         public LikesViewHolder(View itemView) {
             super(itemView);
             artwork = (NetworkImageView) itemView.findViewById(R.id.artwork_iv_li);
+            artwork.setErrorImageResId(R.drawable.albumart);
             title = (TextView) itemView.findViewById(R.id.title_tv_li);
             artist = (TextView) itemView.findViewById(R.id.artistn_tv_li);
             duration = (TextView) itemView.findViewById(R.id.time_tv_li);

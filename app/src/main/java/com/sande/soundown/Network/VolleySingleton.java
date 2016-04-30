@@ -9,7 +9,6 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.Volley;
 
-import okhttp3.OkHttpClient;
 
 /**
  * Created by Sandeep on 28-Apr-16.

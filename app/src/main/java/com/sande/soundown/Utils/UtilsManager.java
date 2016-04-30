@@ -62,14 +62,16 @@ public class UtilsManager{
     }
 
     public static File getSongFile(String fileName){
+        fileName=fileName.replace("\\W+","");
         return new File(getSongStorageDir(),fileName+".mp3");
     }
 
-    public static String getSongStorDir(){
-        return Environment.DIRECTORY_MUSIC+"/Soundown/";
+    public static String getSongStorDir(String filename){
+        return "Soundown/"+filename+".mp3";
     }
 
     public static boolean doesSongExist(String title){
+        title=title.replaceAll("\\W+", "");
         File mSongfile=new File(getSongStorageDir(),title+".mp3");
         if(mSongfile.exists()){
             return true;

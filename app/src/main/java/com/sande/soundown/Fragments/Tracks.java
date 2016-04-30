@@ -1,7 +1,6 @@
 package com.sande.soundown.Fragments;
 
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -16,15 +15,13 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.sande.soundown.Adapter.LikesAdapter;
-import com.sande.soundown.GsonFiles.LikesObject;
+import com.sande.soundown.Adapter.TracksAdapter;
+import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
-import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -37,18 +34,27 @@ import mehdi.sakout.dynamicbox.DynamicBox;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class Likes extends Fragment implements ApiCons{
+public class Tracks extends Fragment implements ApiCons{
 
 
     private RequestQueue mReqQueue;
     private String mUrlLikes;
-    private LikesAdapter mAdapter;
+    private TracksAdapter mAdapter;
     private boolean loading;
     private boolean isScrollable=true;
     private DynamicBox box;
+    private static final String KEY_URL = "URL";
 
-    public Likes() {
+    public Tracks() {
         // Required empty public constructor
+    }
+
+    public static Tracks getInstance(String mUrlLikes){
+        Tracks mFrag=new Tracks();
+        Bundle mBundle=new Bundle();
+        mBundle.putString(KEY_URL,mUrlLikes);
+        mFrag.setArguments(mBundle);
+        return mFrag;
     }
 
     @Override
@@ -56,21 +62,18 @@ public class Likes extends Fragment implements ApiCons{
         super.onCreate(savedInstanceState);
         VolleySingleton mVolley= VolleySingleton.getInstance(getContext());
         mReqQueue=mVolley.getRequestQueue();
+        if(getArguments()!=null){
+            mUrlLikes=getArguments().getString(KEY_URL);
+        }
     }
 
     private void getLikes() {
-        if(mUrlLikes==null){
-            long userId=UtilsManager.getUserID(getContext());
-            mUrlLikes = USERS_PAGE + userId + FAVORITES +
-                    OAUTH_TOKEN_URI + UtilsManager.getAccessToken(getContext()) +
-                    LINKED_PARTITION + SET_LIMIT;
-        }
         JsonObjectRequest mLikesReq=new JsonObjectRequest(Request.Method.GET, mUrlLikes, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 loading=false;
                 box.hideAll();
-                ArrayList<LikesObject> mLikes=null;
+                ArrayList<TrackObject> mLikes=null;
                 try {
                     if(response.has(NEXT_HREF)) {
                         mUrlLikes = response.getString(NEXT_HREF);
@@ -79,7 +82,7 @@ public class Likes extends Fragment implements ApiCons{
                         isScrollable=false;
                     }
                     Gson gson=new GsonBuilder().create();
-                    mLikes=new ArrayList<>(Arrays.asList(gson.fromJson(response.getJSONArray(COLLECTION).toString(),LikesObject[].class)));
+                    mLikes=new ArrayList<>(Arrays.asList(gson.fromJson(response.getJSONArray(COLLECTION).toString(),TrackObject[].class)));
                     mAdapter.addLikesObjects(mLikes);
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -101,7 +104,7 @@ public class Likes extends Fragment implements ApiCons{
         RecyclerView mRecy=(RecyclerView)mView.findViewById(R.id.rv_fl);
         box=new DynamicBox(getContext(),mRecy);
         box.showLoadingLayout();
-        mAdapter=new LikesAdapter(getContext());
+        mAdapter=new TracksAdapter(getContext());
         final LinearLayoutManager mLLM=new LinearLayoutManager(getContext());
         mRecy.setLayoutManager(mLLM);
         mRecy.setAdapter(mAdapter);

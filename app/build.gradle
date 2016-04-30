@@ -32,7 +32,6 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
-    useLibrary 'org.apache.http.legacy'
 }
 
 dependencies {
@@ -41,6 +40,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.5@aar') {
         transitive = true;
     }
+    compile 'com.github.medyo:dynamicbox:1.2@aar'
     compile 'com.android.support:appcompat-v7:23.3.0'
     compile 'com.android.support:design:23.3.0'
     compile 'com.github.devlight.navigationtabbar:library:1.1.5'
@@ -48,9 +48,7 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.android.support:support-v4:23.3.0'
     compile 'com.thefinestartist:finestwebview:1.2.5'
-    compile 'com.github.medyo:dynamicbox:1.2@aar'
-    compile 'com.squareup.okhttp3:okhttp:3.2.0'
     compile 'com.google.code.gson:gson:2.6.2'
-    compile 'com.github.medyo:dynamicbox:1.2@aar'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'com.vistrav:ask:1.2'
 }

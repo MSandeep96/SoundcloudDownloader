@@ -1,46 +1,44 @@
 package com.sande.soundown.Activities;
 
+import android.app.DownloadManager;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.gigamole.library.NavigationTabBar;
 import com.sande.soundown.Fragments.Feeds;
-import com.sande.soundown.Fragments.Likes;
+import com.sande.soundown.Fragments.Tracks;
 import com.sande.soundown.Fragments.Playlists;
 import com.sande.soundown.Fragments.Profile;
+import com.sande.soundown.GsonFiles.TrackObject;
+import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.R;
-import com.crashlytics.android.Crashlytics;
 import com.sande.soundown.Utils.UtilsManager;
 
 import java.util.ArrayList;
 
-import io.fabric.sdk.android.Fabric;
-
 public class MainActivity extends AppCompatActivity implements CallBackMain {
 
     private ViewPager mViewpager;
+    private DownloadManager mDownloadManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        mDownloadManager=(DownloadManager)getSystemService(DOWNLOAD_SERVICE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setTitle("Soundown");
@@ -87,7 +85,23 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
         mViewpager.setCurrentItem(item,true);
     }
 
-    class MyFragAdapter extends FragmentStatePagerAdapter{
+    @Override
+    public void enqueueDownload(TrackObject song) {
+        String url=song.getStream_url()+"?oauth_token="+UtilsManager.getAccessToken(this);
+        String fileName=song.getTitle().replaceAll("\\W+","");
+        if(!UtilsManager.isExternalStorageWritable()){
+            Toast.makeText(MainActivity.this, "SD Card not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Uri downUri=Uri.parse(url);
+        DownloadManager.Request req=new DownloadManager.Request(downUri);
+        req.setTitle(fileName).setDescription("DownloadingYo");
+        req.setVisibleInDownloadsUi(false);
+        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
+        mDownloadManager.enqueue(req);
+    }
+
+    class MyFragAdapter extends FragmentStatePagerAdapter implements ApiCons{
 
         public MyFragAdapter(FragmentManager fm) {
             super(fm);
@@ -96,7 +110,9 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0:return new Likes();
+                case 0:return Tracks.getInstance(USERS_PAGE + UtilsManager.getUserID(getBaseContext()) + FAVORITES +
+                        OAUTH_TOKEN_URI + UtilsManager.getAccessToken(getBaseContext()) +
+                        LINKED_PARTITION + SET_LIMIT);
                 case 1:return new Playlists();
                 case 2:return new Feeds();
                 case 3:return new Profile();

@@ -1,15 +1,18 @@
 package com.sande.soundown.Activities;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.View;
+import android.view.MenuItem;
 
+import com.sande.soundown.Fragments.Tracks;
+import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.ProjectConstants;
+import com.sande.soundown.Utils.UtilsManager;
 
-public class PlaylistOpen extends AppCompatActivity {
+public class PlaylistOpen extends AppCompatActivity implements ApiCons{
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,15 +20,21 @@ public class PlaylistOpen extends AppCompatActivity {
         setContentView(R.layout.activity_playlist_open);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Intent mInte=getIntent();
+        String url=mInte.getStringExtra(ProjectConstants.PLAYLIST_URL);
+        url+=PLAYLISTS_TRACKS+OAUTH_TOKEN_URI+ UtilsManager.getAccessToken(this)+LINKED_PARTITION+SET_LIMIT;
+        getSupportFragmentManager().beginTransaction().replace(R.id.fl_cpo, Tracks.getInstance(url)).commit();
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if(item.getItemId()==android.R.id.home){
+            onBackPressed();
+            return true;
+        }
+        else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
 }

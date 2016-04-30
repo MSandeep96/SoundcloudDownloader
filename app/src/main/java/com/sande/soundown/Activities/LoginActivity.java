@@ -1,12 +1,10 @@
 package com.sande.soundown.Activities;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AccountManagerCallback;
-import android.accounts.AccountManagerFuture;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
-import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -15,38 +13,47 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.TextView;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.Volley;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.UtilsManager;
 import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.FinestWebViewActivity;
 import com.thefinestartist.finestwebview.listeners.WebViewListener;
+import com.vistrav.ask.Ask;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 
 public class LoginActivity extends AppCompatActivity implements ApiCons{
 
     private Account[] accounts;
     private RequestQueue mReqQue;
+    private long userID;
+    private String accessToken;
+    private TextView statusTV;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().getDecorView().setSystemUiVisibility(
+                View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                        | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.activity_login);
         VolleySingleton mSingleton=VolleySingleton.getInstance(this);
         mReqQue=mSingleton.getRequestQueue();
+        statusTV=(TextView)findViewById(R.id.tv_actlogin);
     }
 
     public void signIn(View view) {
@@ -54,9 +61,9 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         if(accounts.length==0){
             openWebView();
         }else{
+            statusTV.setText("Request in notifications");
             getAccount();
         }
-
     }
 
     private void getAccount() {
@@ -101,19 +108,19 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
                 .show(makeReq);
     }
 
-    private void getUserID(final String token) {
-        String userIDurl=USER_DETAILS_ID+OAUTH_TOKEN_URI+token;
+    private void getUserID() {
+        statusTV.setText("PLEASE WAIT");
+        String userIDurl=USER_DETAILS_ID+OAUTH_TOKEN_URI+accessToken;
         JsonObjectRequest mReq=new JsonObjectRequest(Request.Method.GET, userIDurl, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {
                 try {
-                    long userID=response.getLong("id");
-                    UtilsManager.setUserID(getBaseContext(),userID);
-                    UtilsManager.setAccessToken(getBaseContext(),token);
-                    UtilsManager.setIsLoggedIn(getBaseContext(),true);
-                    Intent inte=new Intent(getBaseContext(),MainActivity.class);
-                    startActivity(inte);
-                    finish();
+                    userID=response.getLong("id");
+                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+                    if(currentapiVersion>=23) {
+                        getPermissions();
+                    }
+                    gotoMain();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -127,8 +134,39 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         mReqQue.add(mReq);
     }
 
+    private void getPermissions() {
+        Ask.on(this).forPermissions(android.Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                android.Manifest.permission.GET_ACCOUNTS
+        ).withRationales("For saving songs to your device",
+                "For accessing your Soundcloud account if exists").when(new Ask.Permission() {
+            @Override
+            public void granted(List<String> permissions) {
+                if(permissions.size()!=0) {
+                    gotoMain();
+                }
+            }
+
+            @Override
+            public void denied(List<String> permissions) {
+                if(permissions.size()!=0) {
+                    getPermissions();
+                }
+            }
+        }).go();
+    }
+
+    private void gotoMain() {
+        UtilsManager.setUserID(getBaseContext(),userID);
+        UtilsManager.setAccessToken(getBaseContext(),accessToken);
+        UtilsManager.setIsLoggedIn(getBaseContext(),true);
+        Intent inte=new Intent(getBaseContext(),MainActivity.class);
+        startActivity(inte);
+        finish();
+    }
+
     private void gotToken(String token) {
-        getUserID(token);
+        accessToken=token;
+        getUserID();
     }
 
 

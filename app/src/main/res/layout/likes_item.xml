@@ -75,6 +75,7 @@
             android:layout_height="25dp"
             android:background="@null"
             android:tint="@color/grey_hex_66"
+            android:scaleType="fitXY"
             android:id="@+id/play_ib_li"
             android:src="@drawable/play"
             android:layout_alignParentBottom="true"

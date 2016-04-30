@@ -1,6 +1,7 @@
 package com.sande.soundown.Adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -13,11 +14,11 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.sande.soundown.GsonFiles.LikesObject;
+import com.sande.soundown.Activities.PlaylistOpen;
 import com.sande.soundown.GsonFiles.PlaylistObject;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
-import com.sande.soundown.Utils.UtilsManager;
+import com.sande.soundown.Utils.ProjectConstants;
 
 import java.util.ArrayList;
 
@@ -81,10 +82,10 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
     }
 
     @Override
-    public void onBindViewHolder(final RecyclerView.ViewHolder holder, int position) {
+    public void onBindViewHolder(final RecyclerView.ViewHolder holder, final int position) {
         // TODO: 28-Apr-16 hooooly shit
         if (holder instanceof PlaylistsViewHolder) {
-            ((PlaylistsViewHolder) holder).artwork.setImageUrl(items.get(position).getUri(), mImageLoader);
+            ((PlaylistsViewHolder) holder).artwork.setImageUrl(items.get(position).getArtwork_url(), mImageLoader);
             ((PlaylistsViewHolder) holder).title.setText(items.get(position).getTitle());
             ((PlaylistsViewHolder) holder).created_by.setText(items.get(position).getUser().getUsername());
             String trackCount = "Tracks : "+items.get(position).getTrack_count();
@@ -92,7 +93,9 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((PlaylistsViewHolder) holder).openbtn.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    // TODO: 29-Apr-16 dsfs
+                    Intent mInte=new Intent(v.getContext(), PlaylistOpen.class);
+                    mInte.putExtra(ProjectConstants.PLAYLIST_URL,items.get(position).getUri());
+                    v.getContext().startActivity(mInte);
                 }
             });
         }
@@ -129,6 +132,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
         public PlaylistsViewHolder(View itemView) {
             super(itemView);
             artwork = (NetworkImageView) itemView.findViewById(R.id.artwork_iv_pi);
+            artwork.setDefaultImageResId(R.drawable.albumart);
             title = (TextView) itemView.findViewById(R.id.title_tv_pi);
             created_by = (TextView) itemView.findViewById(R.id.artistn_tv_pi);
             track_count = (TextView) itemView.findViewById(R.id.tracks_tv_pi);

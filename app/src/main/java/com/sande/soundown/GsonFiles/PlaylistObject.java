@@ -9,6 +9,12 @@ public class PlaylistObject {
     int track_count;
     User user;
 
+    public String getArtwork_url() {
+        return artwork_url;
+    }
+
+    String artwork_url;
+
     public String getUri() {
         return uri;
     }

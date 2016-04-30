@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/colorWhite"
     tools:context="com.sande.soundown.Fragments.Profile">
 
     <de.hdodenhof.circleimageview.CircleImageView xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -14,7 +15,7 @@
         android:src="@color/Color_Aqua"
         app:civ_border_color="@color/colorPrimary"
         app:civ_border_width="2dp"
-        android:layout_marginBottom="20dp"/>
+        android:layout_marginBottom="50dp"/>
 
     <TextView
         android:id="@+id/userName_tv_fprof"
@@ -28,15 +29,13 @@
         android:padding="5dp"
         android:text="Salar"
         android:textColor="@color/colorWhite"
-        android:textSize="18sp" />
+        android:textSize="20sp" />
 
     <LinearLayout
         android:id="@+id/ll_ff_fp"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:layout_below="@+id/civ_fprof"
-        android:layout_marginTop="20dp"
-        android:background="@drawable/stroke"
         android:orientation="horizontal">
 
         <TextView
@@ -125,4 +124,15 @@
         android:layout_height="2dp"
         android:background="@color/strokecolor"/>
 
+    <View
+        android:layout_below="@+id/ll_ff_fp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/strokecolor"/>
+
+    <View
+        android:layout_above="@+id/ll_ff_fp"
+        android:layout_width="match_parent"
+        android:layout_height="2dp"
+        android:background="@color/strokecolor"/>
 </RelativeLayout>

@@ -65,7 +65,9 @@ public class Profile extends Fragment implements ApiCons, View.OnClickListener {
                     mFolinCount.setText(String.valueOf("Following\n"+response.getInt(FOLLOWINGCNT)));
                     mLikesCount.setText(String.valueOf(response.getInt(FAV_COUNT)));
                     mPlaysCount.setText(String.valueOf(response.getInt(PLAYLISTCNT)));
-                    mVolley.getImageLoader().get(response.getString(AVATAR), new ImageLoader.ImageListener() {
+                    String avatar=response.getString(AVATAR);
+                    avatar=avatar.replace("large","t300x300");
+                    mVolley.getImageLoader().get(avatar, new ImageLoader.ImageListener() {
                         @Override
                         public void onResponse(ImageLoader.ImageContainer response, boolean isImmediate) {
                             mImageView.setImageBitmap(response.getBitmap());
