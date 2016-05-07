@@ -1,20 +1,20 @@
-package com.sande.soundown.Activities;
+package com.sande.soundown.activities;
 
-import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AuthenticatorException;
 import android.accounts.OperationCanceledException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -43,6 +43,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
     private long userID;
     private String accessToken;
     private TextView statusTV;
+    public static final int REQ_AUTH=88;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,15 +55,35 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         VolleySingleton mSingleton=VolleySingleton.getInstance(this);
         mReqQue=mSingleton.getRequestQueue();
         statusTV=(TextView)findViewById(R.id.tv_actlogin);
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if(currentapiVersion>=23) {
+            getPermissions();
+        }
     }
 
     public void signIn(View view) {
         accounts=AccountManager.get(this).getAccountsByType("com.soundcloud.android.account");
-        if(accounts.length==0){
-            openWebView();
+        if(accounts.length==0||true){
+            getAuthFromBrowser();
+            //openWebView();
         }else{
-            statusTV.setText("Request in notifications");
             getAccount();
+        }
+    }
+
+    private void getAuthFromBrowser() {
+        String makeReq=BASE_URL+CLIENT_ID_URI+CLIENT_ID+RESPONSE_TYPE+RESPONSE_TOKEN+DISPLAY_URI+DISPLAY+REDIRECT_URI+REDIRECT;
+        Uri urlReq=Uri.parse(makeReq);
+        Intent browser=new Intent(Intent.ACTION_VIEW,urlReq);
+        startActivity(browser);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Intent mInte = getIntent();
+        if (mInte.getData() != null) {
+            Toast.makeText(LoginActivity.this, mInte.getData().getFragment(), Toast.LENGTH_SHORT).show();
         }
     }
 
@@ -116,10 +137,6 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
             public void onResponse(JSONObject response) {
                 try {
                     userID=response.getLong("id");
-                    int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-                    if(currentapiVersion>=23) {
-                        getPermissions();
-                    }
                     gotoMain();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -142,7 +159,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
             @Override
             public void granted(List<String> permissions) {
                 if(permissions.size()!=0) {
-                    gotoMain();
+
                 }
             }
 
@@ -174,7 +191,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         String access=null;
         try {
              access=new AsyncTask<Account, Void, String>() {
-                @Override
+                 @Override
                 protected String doInBackground(Account... params) {
                     String access = null;
                     try {
@@ -190,6 +207,4 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         }
         gotToken(access);
     }
-
-    
 }

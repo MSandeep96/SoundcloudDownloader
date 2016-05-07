@@ -8,13 +8,14 @@
     <uses-permission android:name="android.permission.USE_CREDENTIALS" />
 
     <application
+        android:name=".Soundown"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme">
         U
         <activity
-            android:name=".Activities.MainActivity"
+            android:name=".activities.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -31,23 +32,31 @@
         <activity
             android:theme="@style/AppTheme.NoTitle"
             android:label="Login"
-            android:name=".Activities.LoginActivity" />
+            android:exported="true"
+            android:name=".activities.LoginActivity">
+        <intent-filter>
+            <action android:name="android.intent.action.VIEW" />
+            <category android:name="android.intent.category.DEFAULT" />
+            <category android:name="android.intent.category.BROWSABLE" />
+            <data android:scheme="http" android:host="redirectsoundown.com"/>
+        </intent-filter>
+        </activity>
         <activity
-            android:name=".Activities.PlaylistOpen"
+            android:name=".activities.PlaylistOpen"
             android:label="@string/title_activity_playlist_open"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sande.soundown.Activities.MainActivity" />
+                android:value="com.sande.soundown.activities.MainActivity" />
         </activity>
         <activity
-            android:name=".Activities.UserOpen"
+            android:name=".activities.UserOpen"
             android:label="@string/title_activity_user_open"
-            android:parentActivityName=".Activities.MainActivity"
+            android:parentActivityName=".activities.MainActivity"
             android:theme="@style/AppTheme.NoActionBar">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.sande.soundown.Activities.MainActivity" />
+                android:value="com.sande.soundown.activities.MainActivity" />
         </activity>
         <activity
             android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"

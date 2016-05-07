@@ -1,4 +1,4 @@
-package com.sande.soundown.Activities;
+package com.sande.soundown.activities;
 
 import android.content.Intent;
 import android.os.Bundle;

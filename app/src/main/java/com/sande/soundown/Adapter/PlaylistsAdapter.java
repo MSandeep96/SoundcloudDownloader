@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
-import com.sande.soundown.Activities.PlaylistOpen;
+import com.sande.soundown.activities.PlaylistOpen;
 import com.sande.soundown.GsonFiles.PlaylistObject;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;

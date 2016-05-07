@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_login"
-    tools:context="com.sande.soundown.Activities.LoginActivity">
+    tools:context="com.sande.soundown.activities.LoginActivity">
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
