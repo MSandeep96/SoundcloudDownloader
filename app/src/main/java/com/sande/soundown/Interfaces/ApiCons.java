@@ -6,14 +6,14 @@ package com.sande.soundown.Interfaces;
 public interface ApiCons{
     String BASE_URL="https://soundcloud.com/connect?";
     String CLIENT_ID_URI="client_id=";
-    String CLIENT_ID="c9b0b6f01bb3987448c07c2744c5f117";
+    String CLIENT_ID="262b166a6ebe9e3fc269f23204bc602b";
     String RESPONSE_TYPE="&response_type=";
     String RESPONSE_TOKEN="token";
     String DISPLAY_URI="&display=";
     String LINKED_PARTITION="&linked_partitioning=1";
     String DISPLAY="popup";
     String REDIRECT_URI="&redirect_uri=";
-    String REDIRECT="http://redirectsoundown.com";
+    String REDIRECT="http://www.soundownredirectshere.com/tokenafterthis/token";
     String USER_DETAILS_ID="https://api.soundcloud.com/me?";
     String OAUTH_TOKEN_URI="oauth_token=";
     String USERS_PAGE="https://api.soundcloud.com/users/";

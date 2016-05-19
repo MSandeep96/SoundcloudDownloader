@@ -38,7 +38,8 @@
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="http" android:host="redirectsoundown.com"/>
+            <data android:scheme="http"
+                android:host="www.soundownredirectshere.com" />
         </intent-filter>
         </activity>
         <activity
