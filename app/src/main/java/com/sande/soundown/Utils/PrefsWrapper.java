@@ -12,6 +12,11 @@ public class PrefsWrapper {
     Context context;
 
 
+    final String IS_LOGGED_IN = "IS_LOGGED_IN";
+    final String ACCESS_TOKEN="ACCESS_TOKEN";
+    final String USER_ID="USER_ID";
+
+
     public PrefsWrapper(Context context){
         this.context=context;
         mSharedPrefs=context.getSharedPreferences(SHARED_PRES,Context.MODE_PRIVATE);
@@ -22,16 +27,16 @@ public class PrefsWrapper {
     //getters
 
     public boolean isLoggedIn(){
-        return mSharedPrefs.getBoolean(ProjectConstants.IS_LOGGED_IN,false);
+        return mSharedPrefs.getBoolean(IS_LOGGED_IN,false);
     }
 
     public String getAccessToken(){
-        return mSharedPrefs.getString(ProjectConstants.ACCESS_TOKEN,"");
+        return mSharedPrefs.getString(ACCESS_TOKEN,"");
     }
 
 
     public long getUserID(){
-        return mSharedPrefs.getLong(ProjectConstants.USER_ID,-1);
+        return mSharedPrefs.getLong(USER_ID,-1);
     }
 
 
@@ -41,21 +46,21 @@ public class PrefsWrapper {
 
     public PrefsWrapper setUserID(long userID){
         SharedPreferences.Editor mShareEdit=mSharedPrefs.edit();
-        mShareEdit.putLong(ProjectConstants.USER_ID,userID);
+        mShareEdit.putLong(USER_ID,userID);
         mShareEdit.apply();
         return this;
     }
 
     public PrefsWrapper setAccessToken(String accesstoken){
         SharedPreferences.Editor mShareEdit=mSharedPrefs.edit();
-        mShareEdit.putString(ProjectConstants.ACCESS_TOKEN,accesstoken);
+        mShareEdit.putString(ACCESS_TOKEN,accesstoken);
         mShareEdit.apply();
         return this;
     }
 
     public PrefsWrapper setIsLoggedIn(boolean isli){
         SharedPreferences.Editor mShareEdit=mSharedPrefs.edit();
-        mShareEdit.putBoolean(ProjectConstants.IS_LOGGED_IN,isli);
+        mShareEdit.putBoolean(IS_LOGGED_IN,isli);
         mShareEdit.apply();
         return this;
     }

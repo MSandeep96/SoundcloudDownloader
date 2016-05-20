@@ -24,9 +24,8 @@ import com.android.volley.toolbox.JsonObjectRequest;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
-import com.thefinestartist.finestwebview.FinestWebView;
-import com.thefinestartist.finestwebview.listeners.WebViewListener;
 import com.vistrav.ask.Ask;
 
 import org.json.JSONException;
@@ -43,7 +42,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
     private long userID;
     private String accessToken;
     private TextView statusTV;
-    public static final int REQ_AUTH=88;
+    private PrefsWrapper prefWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,20 +51,35 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.activity_login);
-        VolleySingleton mSingleton=VolleySingleton.getInstance(this);
-        mReqQue=mSingleton.getRequestQueue();
+
+        mReqQue=VolleySingleton.getInstance(this).getRequestQueue();
         statusTV=(TextView)findViewById(R.id.tv_actlogin);
+        prefWrapper=new PrefsWrapper(this);
+
+        //check if called by intent filter
+        getAccessTokenFromUrl();
+
+        //get permissions if api > 23
         int currentapiVersion = android.os.Build.VERSION.SDK_INT;
         if(currentapiVersion>=23) {
             getPermissions();
         }
     }
 
+    private void getAccessTokenFromUrl() {
+        final Uri data = this.getIntent().getData();
+        if(data != null && data.getScheme().equals("sociallogin") && data.getFragment() != null) {
+            String accessToken = data.getFragment().replaceFirst("access_token=", "");
+            int amperPos=accessToken.indexOf("&");
+            accessToken=accessToken.substring(0,amperPos);
+            gotToken(accessToken);
+        }
+    }
+
     public void signIn(View view) {
         accounts=AccountManager.get(this).getAccountsByType("com.soundcloud.android.account");
-        if(accounts.length==0||true){
+        if(accounts.length==0){
             getAuthFromBrowser();
-            //openWebView();
         }else{
             getAccount();
         }
@@ -76,15 +90,6 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         Uri urlReq=Uri.parse(makeReq);
         Intent browser=new Intent(Intent.ACTION_VIEW,urlReq);
         startActivity(browser);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Intent mInte = getIntent();
-        if (mInte.getData() != null) {
-            Toast.makeText(LoginActivity.this, mInte.getData().getFragment(), Toast.LENGTH_SHORT).show();
-        }
     }
 
     private void getAccount() {
@@ -105,28 +110,6 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
                     }).create();
             mAlertDialog.show();
         }
-    }
-
-    private void openWebView() {
-        String makeReq=BASE_URL+CLIENT_ID_URI+CLIENT_ID+RESPONSE_TYPE+RESPONSE_TOKEN+DISPLAY_URI+DISPLAY+REDIRECT_URI+REDIRECT;
-        new FinestWebView.Builder(this).webViewJavaScriptEnabled(true)
-                .setWebViewListener(new WebViewListener() {
-                    @Override
-                    public void onPageStarted(String url) {
-                        super.onPageStarted(url);
-                        if(url.startsWith(REDIRECT)){
-                            String token=
-                                    url=url.replace(REDIRECTED_URL,"");
-                            int pos=token.indexOf('&');
-                            token=url.substring(0,pos);
-                            gotToken(token);
-                        }
-                    }
-                })
-
-                .backPressToClose(true)
-                .webViewJavaScriptCanOpenWindowsAutomatically(true)
-                .show(makeReq);
     }
 
     private void getUserID() {
@@ -159,7 +142,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
             @Override
             public void granted(List<String> permissions) {
                 if(permissions.size()!=0) {
-
+                    //got all permissions
                 }
             }
 
@@ -167,15 +150,17 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
             public void denied(List<String> permissions) {
                 if(permissions.size()!=0) {
                     getPermissions();
+                    //didnt get some permission
                 }
             }
         }).go();
     }
 
+    // TODO: 20-05-2016 check if this works 
+
     private void gotoMain() {
-        UtilsManager.setUserID(getBaseContext(),userID);
-        UtilsManager.setAccessToken(getBaseContext(),accessToken);
-        UtilsManager.setIsLoggedIn(getBaseContext(),true);
+        //setting preferences
+        prefWrapper.setUserID(userID).setAccessToken(accessToken).setIsLoggedIn(true);
         Intent inte=new Intent(getBaseContext(),MainActivity.class);
         startActivity(inte);
         finish();
@@ -190,6 +175,7 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
     public void getAuthToken(Account account){
         String access=null;
         try {
+            //this method though..:-O
              access=new AsyncTask<Account, Void, String>() {
                  @Override
                 protected String doInBackground(Account... params) {
@@ -207,4 +193,5 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
         }
         gotToken(access);
     }
+
 }

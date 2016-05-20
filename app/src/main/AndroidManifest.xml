@@ -30,17 +30,22 @@
             android:value="af2b51e6691d1e04ae5c975ab2d4196ef37afcd0" />
 
         <activity
-            android:theme="@style/AppTheme.NoTitle"
-            android:label="Login"
+            android:name=".activities.LoginActivity"
             android:exported="true"
-            android:name=".activities.LoginActivity">
+            android:label="Login"
+            android:theme="@style/AppTheme.NoTitle">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-                <data android:scheme="sociallogin" android:host="redirect" />
+
+                <data
+                    android:host="redirect"
+                    android:scheme="sociallogin" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".activities.PlaylistOpen"
             android:label="@string/title_activity_playlist_open"
@@ -49,6 +54,7 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sande.soundown.activities.MainActivity" />
         </activity>
+
         <activity
             android:name=".activities.UserOpen"
             android:label="@string/title_activity_user_open"
@@ -58,11 +64,10 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.sande.soundown.activities.MainActivity" />
         </activity>
-        <activity
-            android:name="com.thefinestartist.finestwebview.FinestWebViewActivity"
-            android:configChanges="keyboardHidden|orientation|screenSize"
-            android:screenOrientation="sensor"
-            android:theme="@style/AppTheme.WebView"/>
+
+        <activity android:name=".activities.UserLikes"
+                android:parentActivityName=".activities.UserOpen"
+            android:theme="@android:style/Theme.Dialog"/>
     </application>
 
 </manifest>

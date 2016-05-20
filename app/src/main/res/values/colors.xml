@@ -8,4 +8,6 @@
     <color name="strokecolor">#808080</color>
     <color name="colorTransWhite">#2fff</color>
     <color name="colorTransWhiteBorder">#4fff</color>
+    <color name="grey_hex_66">#424242</color>
+    <color name="transparent_black_hex_66">#A7000000</color>
 </resources>

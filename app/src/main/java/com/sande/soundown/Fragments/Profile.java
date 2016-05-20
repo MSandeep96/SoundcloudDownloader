@@ -1,6 +1,7 @@
 package com.sande.soundown.Fragments;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -22,7 +23,9 @@ import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.PrefsWrapper;
+import com.sande.soundown.Utils.ProjectConstants;
 import com.sande.soundown.Utils.UtilsManager;
+import com.sande.soundown.activities.UserOpen;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -55,6 +58,8 @@ public class Profile extends Fragment implements ApiCons, View.OnClickListener {
         TextView mPlacePlaylist = (TextView) mView.findViewById(R.id.playlistplac_tv_fprof);
         mPlaceLikes.setOnClickListener(this);
         mPlacePlaylist.setOnClickListener(this);
+        mFolCount.setOnClickListener(this);
+        mFolinCount.setOnClickListener(this);
         PrefsWrapper wrapper=new PrefsWrapper(getContext());
         final VolleySingleton mVolley = VolleySingleton.getInstance(getContext());
         String url = USERS_PAGE +wrapper.getUserID() + "?" + OAUTH_TOKEN_URI + wrapper.getAccessToken();
@@ -96,11 +101,28 @@ public class Profile extends Fragment implements ApiCons, View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.likesplac_tv_fprof) {
-            ((CallBackMain) getContext()).setViewPager(0);
-        } else {
-            ((CallBackMain) getContext()).setViewPager(1);
+        switch (v.getId()){
+            case R.id.likescnt_tv_fprof:
+                ((CallBackMain)getContext()).setViewPager(0);
+                break;
+            case R.id.playlistcnt_tv_fprof:
+                ((CallBackMain)getContext()).setViewPager(1);
+                break;
+            case R.id.foling_tv_fprof:
+                callIntent(true);
+                break;
+            case R.id.folwer_tv_fprof:
+                callIntent(false);
+                break;
         }
+    }
 
+    private void callIntent(boolean i) {
+        //notice
+        //true for following
+        //false for followers
+        Intent mInte=new Intent(getContext(), UserOpen.class);
+        mInte.putExtra(UserOpen.IS_FOLLOWING,i);
+        startActivity(mInte);
     }
 }

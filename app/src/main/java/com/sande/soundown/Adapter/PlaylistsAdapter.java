@@ -90,7 +90,7 @@ public class PlaylistsAdapter extends RecyclerView.Adapter<RecyclerView.ViewHold
             ((PlaylistsViewHolder) holder).created_by.setText(items.get(position).getUser().getUsername());
             String trackCount = "Tracks : "+items.get(position).getTrack_count();
             ((PlaylistsViewHolder) holder).track_count.setText(trackCount);
-            ((PlaylistsViewHolder) holder).openbtn.setOnClickListener(new View.OnClickListener() {
+            ((PlaylistsViewHolder) holder).itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     Intent mInte=new Intent(v.getContext(), PlaylistOpen.class);

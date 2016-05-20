@@ -154,7 +154,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         public LikesViewHolder(View itemView) {
             super(itemView);
             artwork = (NetworkImageView) itemView.findViewById(R.id.artwork_iv_li);
-            artwork.setErrorImageResId(R.drawable.albumart);
+            artwork.setDefaultImageResId(R.drawable.albumart);
             title = (TextView) itemView.findViewById(R.id.title_tv_li);
             artist = (TextView) itemView.findViewById(R.id.artistn_tv_li);
             duration = (TextView) itemView.findViewById(R.id.time_tv_li);

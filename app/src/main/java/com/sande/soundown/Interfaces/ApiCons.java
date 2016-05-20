@@ -25,6 +25,8 @@ public interface ApiCons{
     String TYPE_TRACK="&type=track";
     String GET_FEED="https://api.soundcloud.com/me/activities?type=track";
     String PLAYLISTS_TRACKS="/tracks?";
+    String FOLLOWING="http://api.soundcloud.com/me/followings?oauth_token=";
+    String FOLLOWER="http://api.soundcloud.com/me/followers?oauth_token=";
 
     String AVATAR="avatar_url";
     String USERNAME="username";
