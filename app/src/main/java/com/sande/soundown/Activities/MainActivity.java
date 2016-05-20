@@ -25,6 +25,7 @@ import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import java.util.ArrayList;
@@ -33,6 +34,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
 
     private ViewPager mViewpager;
     private DownloadManager mDownloadManager;
+    private PrefsWrapper prefsWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,8 +43,9 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
         mDownloadManager=(DownloadManager)getSystemService(DOWNLOAD_SERVICE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        prefsWrapper=new PrefsWrapper(this);
         getSupportActionBar().setTitle("Soundown");
-        if(!UtilsManager.isLoggedIn(this)){
+        if(!prefsWrapper.isLoggedIn()){
             Intent mIntent=new Intent(this,LoginActivity.class);
             startActivity(mIntent);
             finish();
@@ -87,7 +90,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
 
     @Override
     public void enqueueDownload(TrackObject song) {
-        String url=song.getStream_url()+"?oauth_token="+UtilsManager.getAccessToken(this);
+        String url=song.getStream_url()+"?oauth_token="+prefsWrapper.getAccessToken();
         String fileName=song.getTitle().replaceAll("\\W+","");
         if(!UtilsManager.isExternalStorageWritable()){
             Toast.makeText(MainActivity.this, "SD Card not available", Toast.LENGTH_SHORT).show();
@@ -110,8 +113,8 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
         @Override
         public Fragment getItem(int position) {
             switch (position){
-                case 0:return Tracks.getInstance(USERS_PAGE + UtilsManager.getUserID(getBaseContext()) + FAVORITES +
-                        OAUTH_TOKEN_URI + UtilsManager.getAccessToken(getBaseContext()) +
+                case 0:return Tracks.getInstance(USERS_PAGE + prefsWrapper.getUserID() + FAVORITES +
+                        OAUTH_TOKEN_URI + prefsWrapper.getAccessToken() +
                         LINKED_PARTITION + SET_LIMIT);
                 case 1:return new Playlists();
                 case 2:return new Feeds();

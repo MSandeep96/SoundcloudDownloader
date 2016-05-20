@@ -13,7 +13,7 @@ public interface ApiCons{
     String LINKED_PARTITION="&linked_partitioning=1";
     String DISPLAY="popup";
     String REDIRECT_URI="&redirect_uri=";
-    String REDIRECT="http://www.soundownredirectshere.com/tokenafterthis/token";
+    String REDIRECT="sociallogin://redirect";
     String USER_DETAILS_ID="https://api.soundcloud.com/me?";
     String OAUTH_TOKEN_URI="oauth_token=";
     String USERS_PAGE="https://api.soundcloud.com/users/";

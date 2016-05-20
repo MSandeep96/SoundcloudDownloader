@@ -23,6 +23,7 @@ import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
@@ -92,8 +93,9 @@ public class Feeds extends Fragment implements ApiCons{
     }
 
     private void getFeed() {
+        final PrefsWrapper wrapper=new PrefsWrapper(getContext());
         if(mUrlFeed==null){
-            mUrlFeed = GET_FEED+"&"+OAUTH_TOKEN_URI+UtilsManager.getAccessToken(getContext());
+            mUrlFeed = GET_FEED+"&"+OAUTH_TOKEN_URI+wrapper.getAccessToken();
         }
         JsonObjectRequest mFeedReq=new JsonObjectRequest(Request.Method.GET, mUrlFeed, null, new Response.Listener<JSONObject>() {
             @Override
@@ -103,7 +105,7 @@ public class Feeds extends Fragment implements ApiCons{
                 ArrayList<TrackObject> mFeed=new ArrayList<>();
                 try {
                     if(response.has(NEXT_HREF)) {
-                        mUrlFeed = response.getString(NEXT_HREF)+"&"+OAUTH_TOKEN_URI+UtilsManager.getAccessToken(getContext());
+                        mUrlFeed = response.getString(NEXT_HREF)+"&"+OAUTH_TOKEN_URI+wrapper.getAccessToken();
                     }else{
                         mAdapter.setScrollable(false);
                         isScrollable=false;

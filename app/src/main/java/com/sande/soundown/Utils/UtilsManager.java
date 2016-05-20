@@ -11,39 +11,6 @@ import java.io.File;
  */
 public class UtilsManager{
 
-    public static boolean isLoggedIn(Context context){
-        SharedPreferences mShared=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE);
-        return mShared.getBoolean(ProjectConstants.IS_LOGGED_IN,false);
-    }
-
-    public static void setIsLoggedIn(Context context,boolean isli){
-        SharedPreferences.Editor mShareEdit=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE).edit();
-        mShareEdit.putBoolean(ProjectConstants.IS_LOGGED_IN,isli);
-        mShareEdit.apply();
-    }
-
-    public static String getAccessToken(Context context){
-        SharedPreferences mShared=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE);
-        return mShared.getString(ProjectConstants.ACCESS_TOKEN,"");
-    }
-
-    public static void setAccessToken(Context context,String accesstoken){
-        SharedPreferences.Editor mShareEdit=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE).edit();
-        mShareEdit.putString(ProjectConstants.ACCESS_TOKEN,accesstoken);
-        mShareEdit.apply();
-    }
-
-    public static long getUserID(Context context){
-        SharedPreferences mShared=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE);
-        return mShared.getLong(ProjectConstants.USER_ID,-1);
-    }
-
-    public static void setUserID(Context context,long userID){
-        SharedPreferences.Editor mShareEdit=context.getSharedPreferences(ProjectConstants.SHARED_PRES,Context.MODE_PRIVATE).edit();
-        mShareEdit.putLong(ProjectConstants.USER_ID,userID);
-        mShareEdit.apply();
-    }
-
     public static boolean isExternalStorageWritable() {
         String state = Environment.getExternalStorageState();
         if (Environment.MEDIA_MOUNTED.equals(state)) {

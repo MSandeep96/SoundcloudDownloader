@@ -20,6 +20,7 @@ import com.sande.soundown.GsonFiles.PlaylistObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
@@ -81,10 +82,11 @@ public class Playlists extends Fragment implements ApiCons{
     }
 
     private void getPlaylists() {
+        PrefsWrapper wrapper=new PrefsWrapper(getContext());
         if(mPlaylistUrl==null){
-            mPlaylistUrl=USERS_PAGE+ UtilsManager.getUserID(getContext())
+            mPlaylistUrl=USERS_PAGE+wrapper.getUserID()
                     +PLAYLISTS+OAUTH_TOKEN_URI
-                    +UtilsManager.getAccessToken(getContext())
+                    +wrapper.getAccessToken()
                     +LINKED_PARTITION+SET_LIMIT;
         }
         JsonObjectRequest mLikesReq=new JsonObjectRequest(Request.Method.GET, mPlaylistUrl, null, new Response.Listener<JSONObject>() {

@@ -21,6 +21,7 @@ import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
@@ -54,8 +55,9 @@ public class Profile extends Fragment implements ApiCons, View.OnClickListener {
         TextView mPlacePlaylist = (TextView) mView.findViewById(R.id.playlistplac_tv_fprof);
         mPlaceLikes.setOnClickListener(this);
         mPlacePlaylist.setOnClickListener(this);
+        PrefsWrapper wrapper=new PrefsWrapper(getContext());
         final VolleySingleton mVolley = VolleySingleton.getInstance(getContext());
-        String url = USERS_PAGE + UtilsManager.getUserID(getContext()) + "?" + OAUTH_TOKEN_URI + UtilsManager.getAccessToken(getContext());
+        String url = USERS_PAGE +wrapper.getUserID() + "?" + OAUTH_TOKEN_URI + wrapper.getAccessToken();
         JsonObjectRequest mReq = new JsonObjectRequest(Request.Method.GET, url, null, new Response.Listener<JSONObject>() {
             @Override
             public void onResponse(JSONObject response) {

@@ -9,6 +9,7 @@ import android.view.MenuItem;
 import com.sande.soundown.Fragments.Tracks;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.R;
+import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.ProjectConstants;
 import com.sande.soundown.Utils.UtilsManager;
 
@@ -23,7 +24,7 @@ public class PlaylistOpen extends AppCompatActivity implements ApiCons{
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         Intent mInte=getIntent();
         String url=mInte.getStringExtra(ProjectConstants.PLAYLIST_URL);
-        url+=PLAYLISTS_TRACKS+OAUTH_TOKEN_URI+ UtilsManager.getAccessToken(this)+LINKED_PARTITION+SET_LIMIT;
+        url+=PLAYLISTS_TRACKS+OAUTH_TOKEN_URI+ new PrefsWrapper(this).getAccessToken()+LINKED_PARTITION+SET_LIMIT;
         getSupportFragmentManager().beginTransaction().replace(R.id.fl_cpo, Tracks.getInstance(url)).commit();
     }
 
