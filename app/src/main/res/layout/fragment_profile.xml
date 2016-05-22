@@ -26,7 +26,6 @@
         android:layout_toRightOf="@+id/civ_fprof"
         android:background="@color/colorTransBlack"
         android:padding="5dp"
-        android:text="Salar"
         android:textColor="@color/colorWhite"
         android:textSize="20sp" />
 
@@ -43,7 +42,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Followers\n38"
             android:textSize="20sp" />
 
         <View
@@ -57,7 +55,6 @@
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:gravity="center"
-            android:text="Following\n46"
             android:textSize="20sp" />
     </LinearLayout>
 
@@ -65,7 +62,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:text="258"
         android:textSize="20sp"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/ll_ff_fp"
@@ -84,6 +80,7 @@
         android:textSize="20sp"
         android:layout_below="@+id/ll_ff_fp"
         android:paddingLeft="20dp"
+        android:clickable="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true" />
     <View
@@ -96,7 +93,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="end"
-        android:text="258"
         android:textSize="20sp"
         android:layout_marginTop="30dp"
         android:layout_below="@+id/likesplac_tv_fprof"
@@ -112,6 +108,7 @@
         android:gravity="center_vertical"
         android:layout_height="80dp"
         android:text="Playlists"
+        android:clickable="true"
         android:textSize="20sp"
         android:layout_below="@+id/likesplac_tv_fprof"
         android:paddingLeft="20dp"

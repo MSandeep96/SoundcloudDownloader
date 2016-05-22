@@ -1,10 +1,12 @@
 package com.sande.soundown.activities;
 
 import android.app.DownloadManager;
+import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -17,6 +19,7 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 import com.gigamole.library.NavigationTabBar;
+import com.sande.soundown.DialogFragments.DetailedFragment;
 import com.sande.soundown.Fragments.Feeds;
 import com.sande.soundown.Fragments.Tracks;
 import com.sande.soundown.Fragments.Playlists;
@@ -24,23 +27,22 @@ import com.sande.soundown.Fragments.Profile;
 import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Interfaces.CallBackMain;
+import com.sande.soundown.Interfaces.HasTrackAdapter;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import java.util.ArrayList;
 
-public class MainActivity extends AppCompatActivity implements CallBackMain {
+public class MainActivity extends AppCompatActivity implements CallBackMain,HasTrackAdapter {
 
     private ViewPager mViewpager;
-    private DownloadManager mDownloadManager;
     private PrefsWrapper prefsWrapper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mDownloadManager=(DownloadManager)getSystemService(DOWNLOAD_SERVICE);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         prefsWrapper=new PrefsWrapper(this);
@@ -84,25 +86,33 @@ public class MainActivity extends AppCompatActivity implements CallBackMain {
     }
 
     @Override
-    public void setViewPager(int item) {
-        mViewpager.setCurrentItem(item,true);
+    public void launchDialog(TrackObject song) {
+        DetailedFragment mFrag=DetailedFragment.getInstance(song);
+        mFrag.show(getSupportFragmentManager(),"dialog");
     }
 
-    @Override
-    public void enqueueDownload(TrackObject song) {
-        String url=song.getStream_url()+"?oauth_token="+prefsWrapper.getAccessToken();
+    public void startDownload(TrackObject song) {
+        String url=song.getStream_url()+"?oauth_token="+new PrefsWrapper(this).getAccessToken();
         String fileName=song.getTitle().replaceAll("\\W+","");
         if(!UtilsManager.isExternalStorageWritable()){
-            Toast.makeText(MainActivity.this, "SD Card not available", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "SD Card not available", Toast.LENGTH_SHORT).show();
             return;
         }
         Uri downUri=Uri.parse(url);
         DownloadManager.Request req=new DownloadManager.Request(downUri);
-        req.setTitle(fileName).setDescription("DownloadingYo");
+        req.setTitle(fileName);
         req.setVisibleInDownloadsUi(false);
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
-        mDownloadManager.enqueue(req);
+        DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        long downloadRef=mDownloadManager.enqueue(req);
+        //downloadingItems.put(song.getId(),downloadRef);
     }
+
+    @Override
+    public void setViewPager(int item) {
+        mViewpager.setCurrentItem(item,true);
+    }
+
 
     class MyFragAdapter extends FragmentStatePagerAdapter implements ApiCons{
 

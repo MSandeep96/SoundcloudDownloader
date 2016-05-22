@@ -51,7 +51,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserVH> {
     @Override
     public void onBindViewHolder(UserVH holder, final int position) {
         holder.mUser.setText(items.get(position).getUsername());
-        holder.mImage.setImageUrl(items.get(position).getAvatar_url(),mImageLoader);
+        holder.mImage.setImageUrl(items.get(position).getAvatar_url().replace("large","t300x300"),mImageLoader);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -63,6 +63,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserVH> {
     private void openUser(int position) {
         Intent mInte=new Intent(mContext, UserLikes.class);
         mInte.putExtra(ProjectConstants.USER_ID,items.get(position).getId());
+        mInte.putExtra(ProjectConstants.USER_NAME,items.get(position).getUsername());
+        mInte.putExtra(ProjectConstants.USER_DISPLAY_PIC,items.get(position).getAvatar_url());
         mContext.startActivity(mInte);
     }
 

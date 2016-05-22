@@ -67,7 +67,7 @@
 
         <activity android:name=".activities.UserLikes"
                 android:parentActivityName=".activities.UserOpen"
-            android:theme="@android:style/Theme.Dialog"/>
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

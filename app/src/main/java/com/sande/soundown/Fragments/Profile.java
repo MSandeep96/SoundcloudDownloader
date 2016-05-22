@@ -102,10 +102,10 @@ public class Profile extends Fragment implements ApiCons, View.OnClickListener {
     @Override
     public void onClick(View v) {
         switch (v.getId()){
-            case R.id.likescnt_tv_fprof:
+            case R.id.likesplac_tv_fprof:
                 ((CallBackMain)getContext()).setViewPager(0);
                 break;
-            case R.id.playlistcnt_tv_fprof:
+            case R.id.playlistplac_tv_fprof:
                 ((CallBackMain)getContext()).setViewPager(1);
                 break;
             case R.id.foling_tv_fprof:

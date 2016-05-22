@@ -1,34 +1,53 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context="com.sande.soundown.activities.UserLikes">
-    <ImageButton
-        android:id="@+id/close_ib_aul"
-        android:layout_margin="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_close"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@null"/>
-    <de.hdodenhof.circleimageview.CircleImageView
-        android:id="@+id/civ_aul"
-        android:layout_margin="10dp"
-        android:layout_width="150dp"
-        android:layout_height="150dp" />
-    <TextView
-        android:id="@+id/tv_username_tv"
-        android:layout_toRightOf="@+id/civ_aul"
-        android:layout_alignBottom="@+id/civ_aul"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+
+    <RelativeLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="150dp"
+        android:background="@color/colorPrimary">
+
+        <ImageButton
+            android:id="@+id/close_ib_aul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentTop="true"
+            android:layout_margin="10dp"
+            android:background="@null"
+            android:tint="@color/colorWhite"
+            android:src="@drawable/ic_close" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/civ_aul"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
+            android:layout_centerVertical="true"
+            android:layout_margin="10dp"
+            app:civ_border_color="@color/colorWhite"
+            app:civ_border_width="2dp"/>
+
+        <TextView
+            android:id="@+id/tv_username_aul"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/colorWhite"
+            android:layout_alignBottom="@+id/civ_aul"
+            android:textSize="20sp"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:layout_toRightOf="@+id/civ_aul"
+            />
+    </RelativeLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_aul"
-        android:layout_marginTop="10dp"
-        android:layout_below="@+id/tv_username_tv"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
-
-</RelativeLayout>
+        android:layout_height="wrap_content" />
+</LinearLayout>

@@ -7,5 +7,4 @@ import com.sande.soundown.GsonFiles.TrackObject;
  */
 public interface CallBackMain {
     public void setViewPager(int item);
-    public void enqueueDownload(TrackObject song);
 }
