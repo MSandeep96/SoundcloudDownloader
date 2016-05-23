@@ -107,7 +107,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                 }
             });
             boolean fileExists = UtilsManager.doesSongExist(items.get(position).getTitle());
-            if (items.get(position).isStreamable()) {
+            /*if (items.get(position).isStreamable()) {
                 if (fileExists) {
                     ((LikesViewHolder) holder).playbtn.setVisibility(View.VISIBLE);
                 } else {
@@ -129,7 +129,7 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     mContext.startActivity(intent);
 
                 }
-            });
+            });*/
 
         }
 
@@ -168,8 +168,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
         super.onViewRecycled(holder);
         if (holder instanceof LikesViewHolder) {
-            ((LikesViewHolder) holder).playbtn.setVisibility(View.GONE);
-            ((LikesViewHolder) holder).downbtn.setVisibility(View.GONE);
             ((LikesViewHolder) holder).artwork.setImageResource(0);
         }
     }
@@ -179,8 +177,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
         TextView title;
         TextView artist;
         TextView duration;
-        ImageButton playbtn;
-        ImageButton downbtn;
 
         public LikesViewHolder(View itemView) {
             super(itemView);
@@ -189,8 +185,6 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
             title = (TextView) itemView.findViewById(R.id.title_tv_li);
             artist = (TextView) itemView.findViewById(R.id.artistn_tv_li);
             duration = (TextView) itemView.findViewById(R.id.time_tv_li);
-            playbtn = (ImageButton) itemView.findViewById(R.id.play_ib_li);
-            downbtn = (ImageButton) itemView.findViewById(R.id.downbtn_ib_li);
         }
     }
 }

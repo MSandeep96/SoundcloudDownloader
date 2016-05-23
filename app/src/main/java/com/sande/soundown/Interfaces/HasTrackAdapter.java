@@ -11,4 +11,5 @@ import com.sande.soundown.GsonFiles.TrackObject;
 public interface HasTrackAdapter {
     void launchDialog(TrackObject song);
     void startDownload(TrackObject song);
+    boolean isDownloading(long id);
 }

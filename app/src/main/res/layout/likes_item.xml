@@ -6,15 +6,15 @@
     app:cardUseCompatPadding="true">
 
     <RelativeLayout
+        android:padding="16dp"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="match_parent">
 
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/artwork_iv_li"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="110dp"
+            android:layout_height="110dp"
             android:scaleType="centerCrop"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true"
@@ -26,6 +26,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textSize="15sp"
+            android:layout_marginBottom="2dp"
+            android:fontFamily="sans-serif-light"
             android:id="@+id/artistn_tv_li"
             android:layout_alignTop="@+id/artwork_iv_li"
             android:layout_toRightOf="@+id/artwork_iv_li"
@@ -34,52 +36,21 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:textSize="17sp"
+            android:textSize="16sp"
             android:id="@+id/title_tv_li"
             android:layout_below="@+id/artistn_tv_li"
             android:layout_toRightOf="@+id/artwork_iv_li"
             android:layout_toEndOf="@+id/artwork_iv_li"
-            android:layout_toLeftOf="@+id/play_ib_li"
-            android:layout_toStartOf="@+id/play_ib_li"
             android:maxLines="3"
             android:ellipsize="end"/>
-
-        <ImageButton
-            android:visibility="gone"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:tint="@color/grey_hex_66"
-            android:id="@+id/downbtn_ib_li"
-            android:scaleType="fitXY"
-            android:background="@null"
-            android:src="@drawable/download"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="3:03"
             android:id="@+id/time_tv_li"
             android:layout_alignBottom="@+id/artwork_iv_li"
-            android:layout_toRightOf="@+id/artwork_iv_li"
-            android:layout_toEndOf="@+id/artwork_iv_li"
-            />
-
-        <ImageButton
-            android:visibility="gone"
-            android:layout_width="25dp"
-            android:layout_height="25dp"
-            android:background="@null"
-            android:tint="@color/grey_hex_66"
-            android:scaleType="fitXY"
-            android:id="@+id/play_ib_li"
-            android:src="@drawable/play"
-            android:layout_alignParentBottom="true"
             android:layout_alignParentRight="true"
-            android:layout_alignParentEnd="true" />
+            />
     </RelativeLayout>
 </android.support.v7.widget.CardView>

@@ -1,8 +1,10 @@
 package com.sande.soundown.activities;
 
 import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -33,11 +35,15 @@ import com.sande.soundown.Utils.PrefsWrapper;
 import com.sande.soundown.Utils.UtilsManager;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity implements CallBackMain,HasTrackAdapter {
 
     private ViewPager mViewpager;
     private PrefsWrapper prefsWrapper;
+    private HashMap<Long,Long> downloadingItems=new HashMap<>();
+    private BroadcastReceiver notificationClicked;
+    private BroadcastReceiver downloadComplete;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,6 +73,57 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        notificationClicked=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String extraId=DownloadManager.EXTRA_NOTIFICATION_CLICK_DOWNLOAD_IDS;
+                long[] references=intent.getLongArrayExtra(extraId);
+                for(long refer:references){
+                    if(downloadingItems.containsKey(refer)){
+                        showDownloads();
+                    }
+                }
+            }
+        };
+        downloadComplete=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long reference=intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1);
+                if(downloadingItems.containsKey(reference)){
+                    changeDialog(reference);
+                }
+            }
+        };
+        IntentFilter completeFilter=new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        IntentFilter filter=new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        registerReceiver(notificationClicked,filter);
+        registerReceiver(downloadComplete,completeFilter);
+    }
+
+    private void changeDialog(long reference) {
+        String tag=String.valueOf(downloadingItems.get(reference));
+        Fragment mDial=getSupportFragmentManager().findFragmentByTag(tag);
+        if(mDial!=null){
+            ((DetailedFragment)mDial).downloadComplete();
+        }
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(notificationClicked);
+    }
+
+    private void showDownloads() {
+        Intent i = new Intent();
+        i.setAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
+        startActivity(i);
+    }
+
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -85,12 +142,27 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         return super.onOptionsItemSelected(item);
     }
 
+
+
+
+
+    
+    
+    //HasTrackAdapter Methods
+    
+    
+    
     @Override
     public void launchDialog(TrackObject song) {
         DetailedFragment mFrag=DetailedFragment.getInstance(song);
-        mFrag.show(getSupportFragmentManager(),"dialog");
+        mFrag.show(getSupportFragmentManager(),String.valueOf(song.getId()));
     }
-
+    
+    
+    
+    
+    
+    
     public void startDownload(TrackObject song) {
         String url=song.getStream_url()+"?oauth_token="+new PrefsWrapper(this).getAccessToken();
         String fileName=song.getTitle().replaceAll("\\W+","");
@@ -101,12 +173,20 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         Uri downUri=Uri.parse(url);
         DownloadManager.Request req=new DownloadManager.Request(downUri);
         req.setTitle(fileName);
-        req.setVisibleInDownloadsUi(false);
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
         DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadRef=mDownloadManager.enqueue(req);
-        //downloadingItems.put(song.getId(),downloadRef);
+        downloadingItems.put(downloadRef,song.getId());
     }
+
+    @Override
+    public boolean isDownloading(long id) {
+        if(downloadingItems.containsValue(id)){
+            return true;
+        }
+        return false;
+    }
+
 
     @Override
     public void setViewPager(int item) {
@@ -114,6 +194,11 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     }
 
 
+   
+   
+   
+   
+    //FragAdapter
     class MyFragAdapter extends FragmentStatePagerAdapter implements ApiCons{
 
         public MyFragAdapter(FragmentManager fm) {
