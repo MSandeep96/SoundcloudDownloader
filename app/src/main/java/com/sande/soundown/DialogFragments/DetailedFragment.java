@@ -1,5 +1,7 @@
 package com.sande.soundown.DialogFragments;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -16,6 +18,8 @@ import com.sande.soundown.Interfaces.HasTrackAdapter;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.UtilsManager;
+
+import java.io.File;
 
 /**
  * Created by Sandeep on 22-05-2016.
@@ -70,14 +74,22 @@ public class DetailedFragment extends DialogFragment {
         mPlayBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do something
+                Intent intent = new Intent();
+                intent.setAction(android.content.Intent.ACTION_VIEW);
+                File file=UtilsManager.getSongFile(mObj.getTitle());
+                intent.setDataAndType(Uri.fromFile(file), "audio/*");
+                startActivity(intent);
             }
         });
         mShareBtn=(ImageButton)mView.findViewById(R.id.dfd_ib_share);
         mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //do something
+                String mFileName=UtilsManager.getSongStorDir(mObj.getTitle());
+                Intent share = new Intent(Intent.ACTION_SEND);
+                share.setType("audio/*");
+                share.putExtra(Intent.EXTRA_STREAM,mFileName);
+                startActivity(Intent.createChooser(share, "Share music file"));
             }
         });
         changeVisibilities();
@@ -85,10 +97,11 @@ public class DetailedFragment extends DialogFragment {
     }
 
     private void changeVisibilities() {
-        if(((HasTrackAdapter)getContext()).isDownloading(mObj.getId())){
+        if(((HasTrackAdapter)getContext()).isDownloading(mObj)){
             mPlayBtn.setVisibility(View.GONE);
             mDownBtn.setVisibility(View.GONE);
             mShareBtn.setVisibility(View.GONE);
+            mProgressBar.setVisibility(View.VISIBLE);
         }else{
             boolean fileExists = UtilsManager.doesSongExist(mObj.getTitle());
             if(fileExists){

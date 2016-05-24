@@ -1,6 +1,7 @@
 package com.sande.soundown.activities;
 
 import android.app.DownloadManager;
+import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -15,6 +16,7 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -32,7 +34,9 @@ import com.sande.soundown.Interfaces.CallBackMain;
 import com.sande.soundown.Interfaces.HasTrackAdapter;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.PrefsWrapper;
+import com.sande.soundown.Utils.ProjectConstants;
 import com.sande.soundown.Utils.UtilsManager;
+import com.sande.soundown.services.SetTags;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
 
     private ViewPager mViewpager;
     private PrefsWrapper prefsWrapper;
-    private HashMap<Long,Long> downloadingItems=new HashMap<>();
+    private HashMap<Long,TrackObject> downloadingItems=new HashMap<>();
     private BroadcastReceiver notificationClicked;
     private BroadcastReceiver downloadComplete;
 
@@ -93,7 +97,13 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
                 long reference=intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1);
                 if(downloadingItems.containsKey(reference)){
                     changeDialog(reference);
+                    // TODO: 24-05-2016 Add notification
+                    Intent mInte=new Intent(context, SetTags.class);
+                    mInte.putExtra(ProjectConstants.TRACKOBJECT,downloadingItems.get(reference));
+                    startService(mInte);
                 }
+                downloadingItems.remove(reference);
+                // TODO: 24-05-2016 remove reference from hashmap
             }
         };
         IntentFilter completeFilter=new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -103,7 +113,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     }
 
     private void changeDialog(long reference) {
-        String tag=String.valueOf(downloadingItems.get(reference));
+        String tag=String.valueOf(downloadingItems.get(reference).getId());
         Fragment mDial=getSupportFragmentManager().findFragmentByTag(tag);
         if(mDial!=null){
             ((DetailedFragment)mDial).downloadComplete();
@@ -111,9 +121,10 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onDestroy() {
+        super.onDestroy();
         unregisterReceiver(notificationClicked);
+        unregisterReceiver(downloadComplete);
     }
 
     private void showDownloads() {
@@ -127,6 +138,12 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
+        SearchManager searchManager =
+                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView =
+                (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(
+                searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -176,15 +193,12 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
         DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadRef=mDownloadManager.enqueue(req);
-        downloadingItems.put(downloadRef,song.getId());
+        downloadingItems.put(downloadRef,song);
     }
 
     @Override
-    public boolean isDownloading(long id) {
-        if(downloadingItems.containsValue(id)){
-            return true;
-        }
-        return false;
+    public boolean isDownloading(TrackObject song) {
+        return downloadingItems.containsValue(song);
     }
 
 

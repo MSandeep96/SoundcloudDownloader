@@ -106,50 +106,8 @@ public class TracksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>
                     ((HasTrackAdapter)mContext).launchDialog(items.get(position));
                 }
             });
-            boolean fileExists = UtilsManager.doesSongExist(items.get(position).getTitle());
-            /*if (items.get(position).isStreamable()) {
-                if (fileExists) {
-                    ((LikesViewHolder) holder).playbtn.setVisibility(View.VISIBLE);
-                } else {
-                    ((LikesViewHolder) holder).downbtn.setVisibility(View.VISIBLE);
-                }
-            }
-            ((LikesViewHolder) holder).downbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    startDownload(items.get(position));
-                }
-            });
-            ((LikesViewHolder) holder).playbtn.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent();
-                    intent.setAction(android.content.Intent.ACTION_VIEW);
-                    intent.setDataAndType(Uri.fromFile(UtilsManager.getSongFile(items.get(position).getTitle())), "audio/*");
-                    mContext.startActivity(intent);
-
-                }
-            });*/
-
         }
 
-    }
-
-    private void startDownload(TrackObject song) {
-        String url=song.getStream_url()+"?oauth_token="+new PrefsWrapper(mContext).getAccessToken();
-        String fileName=song.getTitle().replaceAll("\\W+","");
-        if(!UtilsManager.isExternalStorageWritable()){
-            Toast.makeText(mContext, "SD Card not available", Toast.LENGTH_SHORT).show();
-            return;
-        }
-        Uri downUri=Uri.parse(url);
-        DownloadManager.Request req=new DownloadManager.Request(downUri);
-        req.setTitle(fileName);
-        req.setVisibleInDownloadsUi(false);
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
-        DownloadManager mDownloadManager=(DownloadManager)mContext.getSystemService(Context.DOWNLOAD_SERVICE);
-        long downloadRef=mDownloadManager.enqueue(req);
-        downloadingItems.put(song.getId(),downloadRef);
     }
 
     @Override
