@@ -1,10 +1,18 @@
 package com.sande.soundown.activities;
 
+import android.app.DownloadManager;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.KeyEvent;
@@ -13,16 +21,47 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.android.volley.Request;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.sande.soundown.Adapter.TracksAdapter;
+import com.sande.soundown.DialogFragments.DetailedFragment;
 import com.sande.soundown.Fragments.Tracks;
+import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
+import com.sande.soundown.Interfaces.HasTrackAdapter;
+import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.PrefsWrapper;
+import com.sande.soundown.Utils.ProjectConstants;
+import com.sande.soundown.Utils.UtilsManager;
+import com.sande.soundown.services.SetTags;
 
-public class SearchActivity extends AppCompatActivity implements ApiCons{
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+
+public class SearchActivity extends AppCompatActivity implements ApiCons,HasTrackAdapter{
 
     Fragment mFrag;
     PrefsWrapper mPrefWrap;
+    private TracksAdapter mAdapter;
+    private boolean isScrollable;
+    private boolean loading;
+    private String nextHref;
+    private RecyclerView mRecy;
+    private HashMap<Long,TrackObject> downloadingItems=new HashMap<>();
+    private BroadcastReceiver notificationClicked;
+    private BroadcastReceiver downloadComplete;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,18 +81,89 @@ public class SearchActivity extends AppCompatActivity implements ApiCons{
                 return false;
             }
         });
-        RecyclerView mRecy=(RecyclerView)findViewById(R.id.cs_rv_search);
+         mRecy=(RecyclerView)findViewById(R.id.cs_rv_search);
+        final LinearLayoutManager mLLM=new LinearLayoutManager(this);
+        assert mRecy != null;
+        mRecy.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if(isScrollable) {
+                    if (dy > 0) {
+                        int visibleItemCount = mLLM.getChildCount();
+                        int totalItemCount = mLLM.getItemCount();
+                        int pastVisibleItems = mLLM.findFirstVisibleItemPosition();
+                        if ((visibleItemCount + pastVisibleItems) >= totalItemCount) {
+                            if (!loading) {
+                                loading = true;
+                                getTracks(nextHref);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    }
 
+    private void getTracks(String href) {
+        JsonObjectRequest mLikesReq=new JsonObjectRequest(Request.Method.GET, href, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                loading=false;
+                ArrayList<TrackObject> mLikes=null;
+                try {
+                    if(response.has(NEXT_HREF)) {
+                        nextHref = response.getString(NEXT_HREF);
+                    }else{
+                        mAdapter.setScrollable(false);
+                        isScrollable=false;
+                    }
+                    Gson gson=new GsonBuilder().create();
+                    mLikes=new ArrayList<>(Arrays.asList(gson.fromJson(response.getJSONArray(COLLECTION).toString(),TrackObject[].class)));
+                    mAdapter.addLikesObjects(mLikes);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //box.showInternetOffLayout();
+            }
+        });
+        VolleySingleton.getInstance(this).getRequestQueue().add(mLikesReq);
     }
 
     private void searchQuery(String s) {
         String mUrl=TRACKS_ID+OAUTH_TOKEN_URI+mPrefWrap.getAccessToken()+SEARCH_START+LINKED_PARTITION+SET_LIMIT;
-        if(mFrag==null){
-            mFrag= Tracks.getInstance(mUrl);
-            getSupportFragmentManager().beginTransaction().add(R.id.fl_cs,mFrag,"SEARCH_FRAG").commit();
-        }else{
-            ((Tracks)mFrag).changedQuery(s);
-        }
+        JsonObjectRequest mLikesReq=new JsonObjectRequest(Request.Method.GET, mUrl, null, new Response.Listener<JSONObject>() {
+            @Override
+            public void onResponse(JSONObject response) {
+                mAdapter=new TracksAdapter(SearchActivity.this);
+                mRecy.setAdapter(mAdapter);
+                loading=false;
+                ArrayList<TrackObject> mLikes=null;
+                try {
+                    if(response.has(NEXT_HREF)) {
+                        nextHref = response.getString(NEXT_HREF);
+                    }else{
+                        mAdapter.setScrollable(false);
+                        isScrollable=false;
+                    }
+                    Gson gson=new GsonBuilder().create();
+                    mLikes=new ArrayList<>(Arrays.asList(gson.fromJson(response.getJSONArray(COLLECTION).toString(),TrackObject[].class)));
+                    mAdapter.addLikesObjects(mLikes);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                //box.showInternetOffLayout();
+            }
+        });
+        VolleySingleton.getInstance(this).getRequestQueue().add(mLikesReq);
     }
 
     @Override
@@ -65,5 +175,96 @@ public class SearchActivity extends AppCompatActivity implements ApiCons{
         else {
             return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void launchDialog(TrackObject song) {
+        DetailedFragment mFrag=DetailedFragment.getInstance(song);
+        mFrag.show(getSupportFragmentManager(),String.valueOf(song.getId()));
+    }
+
+
+
+
+
+
+    public void startDownload(TrackObject song) {
+        String url=song.getStream_url()+"?oauth_token="+PrefsWrapper.with(this).getAccessToken();
+        String fileName=song.getTitle().replaceAll("\\W+","");
+        if(!UtilsManager.isExternalStorageWritable()){
+            Toast.makeText(this, "SD Card not available", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        Uri downUri=Uri.parse(url);
+        DownloadManager.Request req=new DownloadManager.Request(downUri);
+        req.setTitle(fileName);
+        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
+        DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
+        long downloadRef=mDownloadManager.enqueue(req);
+        downloadingItems.put(downloadRef,song);
+    }
+
+    @Override
+    public boolean isDownloading(TrackObject song) {
+        return downloadingItems.containsValue(song);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        notificationClicked=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String extraId=DownloadManager.EXTRA_NOTIFICATION_CLICK_DOWNLOAD_IDS;
+                long[] references=intent.getLongArrayExtra(extraId);
+                for(long refer:references){
+                    if(downloadingItems.containsKey(refer)){
+                        showDownloads();
+                    }
+                }
+            }
+        };
+        downloadComplete=new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                long reference=intent.getLongExtra(DownloadManager.EXTRA_DOWNLOAD_ID,-1);
+                if(downloadingItems.containsKey(reference)){
+                    changeDialog(reference);
+                    // TODO: 24-05-2016 Add notification
+                    Intent mInte=new Intent(context, SetTags.class);
+                    mInte.putExtra(ProjectConstants.TRACKOBJECT,downloadingItems.get(reference));
+                    startService(mInte);
+                }
+                downloadingItems.remove(reference);
+                // TODO: 24-05-2016 remove reference from hashmap
+            }
+        };
+        IntentFilter completeFilter=new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
+        IntentFilter filter=new IntentFilter(DownloadManager.ACTION_NOTIFICATION_CLICKED);
+        registerReceiver(notificationClicked,filter);
+        registerReceiver(downloadComplete,completeFilter);
+    }
+
+    private void changeDialog(long reference) {
+        String tag=String.valueOf(downloadingItems.get(reference).getId());
+        Fragment mDial=getSupportFragmentManager().findFragmentByTag(tag);
+        if(mDial!=null){
+            ((DetailedFragment)mDial).downloadComplete();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(notificationClicked!=null || downloadComplete!=null) {
+            unregisterReceiver(notificationClicked);
+            unregisterReceiver(downloadComplete);
+        }
+    }
+
+    private void showDownloads() {
+        Intent i = new Intent();
+        i.setAction(DownloadManager.ACTION_VIEW_DOWNLOADS);
+        startActivity(i);
     }
 }
