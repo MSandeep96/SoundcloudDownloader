@@ -3,12 +3,14 @@ package com.sande.soundown.activities;
 import android.app.DownloadManager;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.UserManager;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -123,8 +125,10 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(notificationClicked);
-        unregisterReceiver(downloadComplete);
+        if(notificationClicked!=null || downloadComplete!=null) {
+            unregisterReceiver(notificationClicked);
+            unregisterReceiver(downloadComplete);
+        }
     }
 
     private void showDownloads() {
@@ -138,12 +142,6 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
         return true;
     }
 
@@ -154,6 +152,9 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }else if(id==R.id.search){
+            Intent mInte=new Intent(this,SearchActivity.class);
+            startActivity(mInte);
         }
 
         return super.onOptionsItemSelected(item);
@@ -181,7 +182,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     
     
     public void startDownload(TrackObject song) {
-        String url=song.getStream_url()+"?oauth_token="+new PrefsWrapper(this).getAccessToken();
+        String url=song.getStream_url()+"?oauth_token="+PrefsWrapper.with(this).getAccessToken();
         String fileName=song.getTitle().replaceAll("\\W+","");
         if(!UtilsManager.isExternalStorageWritable()){
             Toast.makeText(this, "SD Card not available", Toast.LENGTH_SHORT).show();

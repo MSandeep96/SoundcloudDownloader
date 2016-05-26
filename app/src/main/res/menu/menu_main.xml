@@ -9,8 +9,7 @@
         app:showAsAction="never" />
     <item
         android:id="@+id/search"
-        android:actionViewClass="android.widget.SearchView"
         android:icon="@drawable/ic_search"
-        app:showAsAction="collapseActionView|ifRoom"
+        app:showAsAction="ifRoom"
         android:title="@string/search_title" />
 </menu>

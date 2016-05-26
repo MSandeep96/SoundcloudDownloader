@@ -15,6 +15,8 @@ public interface ApiCons{
     String REDIRECT_URI="&redirect_uri=";
     String REDIRECT="sociallogin://redirect";
     String USER_DETAILS_ID="https://api.soundcloud.com/me?";
+    String TRACKS_ID="https://api.soundcloud.com/tracks?";
+    String SEARCH_START="&q=";
     String OAUTH_TOKEN_URI="oauth_token=";
     String USERS_PAGE="https://api.soundcloud.com/users/";
     String FAVORITES="/favorites?";

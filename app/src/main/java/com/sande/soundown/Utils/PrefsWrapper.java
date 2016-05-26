@@ -17,6 +17,11 @@ public class PrefsWrapper {
     final String USER_ID="USER_ID";
 
 
+    public static PrefsWrapper with(Context context){
+        return new PrefsWrapper(context);
+    }
+
+
     public PrefsWrapper(Context context){
         this.context=context;
         mSharedPrefs=context.getSharedPreferences(SHARED_PRES,Context.MODE_PRIVATE);

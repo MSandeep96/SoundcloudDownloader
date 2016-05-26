@@ -67,6 +67,11 @@ public class Tracks extends Fragment implements ApiCons{
         }
     }
 
+    public void changedQuery(String url){
+        mUrlLikes=url;
+        getLikes();
+    }
+
     private void getLikes() {
         JsonObjectRequest mLikesReq=new JsonObjectRequest(Request.Method.GET, mUrlLikes, null, new Response.Listener<JSONObject>() {
             @Override

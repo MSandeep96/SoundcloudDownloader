@@ -8,4 +8,5 @@
     <string name="title_activity_user_open">UserOpen</string>
     <string name="search_title">Search</string>
     <string name="search_hint">Enter keyword</string>
+    <string name="title_activity_search">SearchActivity</string>
 </resources>
