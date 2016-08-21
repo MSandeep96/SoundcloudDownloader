@@ -1,7 +1,12 @@
 # Soundown
-This app allows you to download songs from Soundcloud.
-It also sets the IDV3 tags appropirately and adds an artwork.
-Once downloaded you can even share the music file from within the app.  
+##
+### Soundcloud Downloader For Android
 
-Design  
-https://www.behance.net/sandeep96
+Soundown is an Android app that lets you download music from Soundcloud.  
+You can check the design of the app [here](https://www.behance.net/sandeep96) on Behance.  
+Feel free to fork the project.  
+Check out the MVP(Model View Presenter) version [here](https://github.com/MSandeep96/SoundLoad).
+
+> *For education purposes only  
+> Support the awesome artists of Soundcloud.  
+> RESPECT SOUNDCLOUDS AUTHORITAH :P*  
