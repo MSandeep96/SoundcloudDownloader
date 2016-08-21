@@ -1,6 +1,7 @@
 # Soundown
 ##
 ### Soundcloud Downloader For Android
+![alt tag](https://github.com/MSandeep96/Soundown/blob/master/app/src/main/res/mipmap-xxxhdpi/Soundown.png)
 
 Soundown is an Android app that lets you download music from Soundcloud.  
 You can check the design of the app [here](https://www.behance.net/sandeep96) on Behance.  
