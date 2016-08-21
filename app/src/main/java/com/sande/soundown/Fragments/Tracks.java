@@ -104,6 +104,12 @@ public class Tracks extends Fragment implements ApiCons{
         RecyclerView mRecy=(RecyclerView)mView.findViewById(R.id.rv_fl);
         box=new DynamicBox(getContext(),mRecy);
         box.showLoadingLayout();
+        box.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getLikes();
+            }
+        });
         mAdapter=new TracksAdapter(getContext());
         final LinearLayoutManager mLLM=new LinearLayoutManager(getContext());
         mRecy.setLayoutManager(mLLM);

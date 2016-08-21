@@ -1,8 +1,9 @@
 package com.sande.soundown.Utils;
 
-import android.content.Context;
-import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.Environment;
+
+import com.sande.soundown.GsonFiles.TrackObject;
 
 import java.io.File;
 
@@ -16,23 +17,33 @@ public class UtilsManager{
         return Environment.MEDIA_MOUNTED.equals(state);
     }
 
-    public static File getSongStorageDir() {
-        return new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_MUSIC)+"/Soundown");
+    public static File getRoot(){
+        return new File(Environment.getExternalStorageDirectory()+"/SoundDown");
     }
 
-    public static File getSongFile(String fileName){
-        fileName=fileName.replaceAll("\\W+","");
-        return new File(getSongStorageDir(),fileName+".mp3");
+    public static File getContainingFolder(String artist){
+        File mFolder=new File(getRoot(),artist);
+        try {
+            if (!mFolder.exists()) {
+                mFolder.mkdir();
+            }
+        }catch (Exception e){
+            //do something?
+        }
+        return mFolder;
     }
 
-    public static String getSongStorDir(String filename){
-        return "Soundown/"+filename+".mp3";
+    public static File getDestinationFile(TrackObject song){
+        return new File(getContainingFolder(song.getUser().getUsername()),song.getTitle()+".mp3");
     }
 
-    public static boolean doesSongExist(String title){
-        title=title.replaceAll("\\W+", "");
-        File mSongfile=new File(getSongStorageDir(),title+".mp3");
-        return mSongfile.exists();
+    public static Uri getDestinationUri(TrackObject song) {
+        File mFile=new File(getContainingFolder(song.getUser().getUsername()),song.getTitle()+".mp3");
+        return Uri.fromFile(mFile);
+    }
+
+    public static boolean doesSongExist(TrackObject song){
+        File mFile=new File(getContainingFolder(song.getUser().getUsername()),song.getTitle()+".mp3");
+        return mFile.exists();
     }
 }

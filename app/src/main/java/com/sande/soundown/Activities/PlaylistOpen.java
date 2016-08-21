@@ -7,7 +7,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -126,7 +125,7 @@ public class PlaylistOpen extends AppCompatActivity implements ApiCons,HasTrackA
         Uri downUri=Uri.parse(url);
         DownloadManager.Request req=new DownloadManager.Request(downUri);
         req.setTitle(fileName);
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
+        req.setDestinationUri(UtilsManager.getDestinationUri(song));
         DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadRef=mDownloadManager.enqueue(req);
         downloadingItems.put(downloadRef,song);

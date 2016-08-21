@@ -15,43 +15,6 @@ public class TrackObject implements Parcelable {
     String stream_url;
     User user;
 
-
-    protected TrackObject(Parcel in) {
-        id = in.readLong();
-        streamable = in.readByte() != 0;
-        title = in.readString();
-        artwork_url = in.readString();
-        duration = in.readInt();
-        stream_url = in.readString();
-    }
-
-    @Override
-    public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(id);
-        dest.writeByte((byte) (streamable ? 1 : 0));
-        dest.writeString(title);
-        dest.writeString(artwork_url);
-        dest.writeInt(duration);
-        dest.writeString(stream_url);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    public static final Creator<TrackObject> CREATOR = new Creator<TrackObject>() {
-        @Override
-        public TrackObject createFromParcel(Parcel in) {
-            return new TrackObject(in);
-        }
-
-        @Override
-        public TrackObject[] newArray(int size) {
-            return new TrackObject[size];
-        }
-    };
-
     public int getDuration() {
         return duration;
     }
@@ -79,4 +42,45 @@ public class TrackObject implements Parcelable {
     public User getUser() {
         return user;
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(this.id);
+        dest.writeByte(this.streamable ? (byte) 1 : (byte) 0);
+        dest.writeString(this.title);
+        dest.writeString(this.artwork_url);
+        dest.writeInt(this.duration);
+        dest.writeString(this.stream_url);
+        dest.writeParcelable(this.user, flags);
+    }
+
+    public TrackObject() {
+    }
+
+    protected TrackObject(Parcel in) {
+        this.id = in.readLong();
+        this.streamable = in.readByte() != 0;
+        this.title = in.readString();
+        this.artwork_url = in.readString();
+        this.duration = in.readInt();
+        this.stream_url = in.readString();
+        this.user = in.readParcelable(User.class.getClassLoader());
+    }
+
+    public static final Parcelable.Creator<TrackObject> CREATOR = new Parcelable.Creator<TrackObject>() {
+        @Override
+        public TrackObject createFromParcel(Parcel source) {
+            return new TrackObject(source);
+        }
+
+        @Override
+        public TrackObject[] newArray(int size) {
+            return new TrackObject[size];
+        }
+    };
 }

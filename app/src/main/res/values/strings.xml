@@ -9,4 +9,7 @@
     <string name="search_title">Search</string>
     <string name="search_hint">Enter keyword</string>
     <string name="title_activity_search">SearchActivity</string>
+    <string name="welcome_screen_text">Get download links to \n your likes, playlists, activity \n and what your friends are \n listening to.</string>
+    <string name="authenticate_text">We need to authenticate \n your account to \n access your content.</string>
+    <string name="welcome_hint">If you’ve got the Soundcloud\n application, check the notification \n panel for authentication \n(given you’ve signed into it).</string>
 </resources>

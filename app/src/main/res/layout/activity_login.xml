@@ -3,8 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_login"
     tools:context="com.sande.soundown.activities.LoginActivity">
+    <ImageView
+        android:id="@+id/al_iv_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
     <ImageView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:gravity="center_horizontal"
+    android:background="@drawable/welcome_gradient"
+    android:orientation="vertical"
+    tools:context="com.sande.soundown.Fragments.Welcome3Fragment">
+
+    <TextView
+        android:text="All set!"
+        android:layout_marginTop="130dp"
+        android:textSize="27sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/colorWhite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <TextView
+        android:layout_marginTop="10dp"
+        android:textSize="27sp"
+        android:fontFamily="sans-serif-light"
+        android:textColor="@color/colorWhite"
+        android:id="@+id/fw_tv_welcome_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_marginTop="40dp"
+        android:id="@+id/fw_civ_profile"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        app:civ_border_color="@android:color/white"
+        app:civ_border_width="2dp"
+        />
+
+</LinearLayout>

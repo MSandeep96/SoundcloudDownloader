@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,6 +22,7 @@ import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
+import com.bumptech.glide.Glide;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
@@ -51,19 +53,13 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
                 View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                         | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         setContentView(R.layout.activity_login);
-
+        Glide.with(this).load(R.drawable.background_login).into(((ImageView)findViewById(R.id.al_iv_background)));
         mReqQue=VolleySingleton.getInstance(this).getRequestQueue();
         statusTV=(TextView)findViewById(R.id.tv_actlogin);
         prefWrapper=new PrefsWrapper(this);
 
         //check if called by intent filter
         getAccessTokenFromUrl();
-
-        //get permissions if api > 23
-        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
-        if(currentapiVersion>=23) {
-            getPermissions();
-        }
     }
 
     private void getAccessTokenFromUrl() {
@@ -77,11 +73,10 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
     }
 
     public void signIn(View view) {
-        accounts=AccountManager.get(this).getAccountsByType("com.soundcloud.android.account");
-        if(accounts.length==0){
-            getAuthFromBrowser();
-        }else{
-            getAccount();
+        //get permissions if api > 23
+        int currentapiVersion = android.os.Build.VERSION.SDK_INT;
+        if(currentapiVersion>=23) {
+            getPermissions();
         }
     }
 
@@ -141,8 +136,13 @@ public class LoginActivity extends AppCompatActivity implements ApiCons{
                 "For accessing your Soundcloud account if exists").when(new Ask.Permission() {
             @Override
             public void granted(List<String> permissions) {
-                if(permissions.size()!=0) {
-                    //got all permissions
+                if(permissions.size()==2) {
+                    accounts=AccountManager.get(LoginActivity.this).getAccountsByType("com.soundcloud.android.account");
+                    if(accounts.length==0){
+                        getAuthFromBrowser();
+                    }else{
+                        getAccount();
+                    }
                 }
             }
 

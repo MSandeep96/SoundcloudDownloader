@@ -1,7 +1,6 @@
 package com.sande.soundown.DialogFragments;
 
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
@@ -18,8 +17,6 @@ import com.sande.soundown.Interfaces.HasTrackAdapter;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.UtilsManager;
-
-import java.io.File;
 
 /**
  * Created by Sandeep on 22-05-2016.
@@ -76,8 +73,7 @@ public class DetailedFragment extends DialogFragment {
             public void onClick(View v) {
                 Intent intent = new Intent();
                 intent.setAction(android.content.Intent.ACTION_VIEW);
-                File file=UtilsManager.getSongFile(mObj.getTitle());
-                intent.setDataAndType(Uri.fromFile(file), "audio/*");
+                intent.setDataAndType(UtilsManager.getDestinationUri(mObj), "audio/*");
                 startActivity(intent);
             }
         });
@@ -85,7 +81,7 @@ public class DetailedFragment extends DialogFragment {
         mShareBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String mFileName=UtilsManager.getSongStorDir(mObj.getTitle());
+                String mFileName=UtilsManager.getDestinationUri(mObj).getPath();
                 Intent share = new Intent(Intent.ACTION_SEND);
                 share.setType("audio/*");
                 share.putExtra(Intent.EXTRA_STREAM,mFileName);
@@ -103,7 +99,7 @@ public class DetailedFragment extends DialogFragment {
             mShareBtn.setVisibility(View.GONE);
             mProgressBar.setVisibility(View.VISIBLE);
         }else{
-            boolean fileExists = UtilsManager.doesSongExist(mObj.getTitle());
+            boolean fileExists = UtilsManager.doesSongExist(mObj);
             if(fileExists){
                 mDownBtn.setVisibility(View.GONE);
             }else{

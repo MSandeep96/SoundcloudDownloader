@@ -1,0 +1,45 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="false"
+    android:background="@drawable/welcome_gradient"
+    tools:context="com.sande.soundown.Fragments.Welcome2Fragment">
+    <TextView
+        android:id="@+id/welcome2_tv_authenticate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="130dp"
+        android:gravity="center_horizontal"
+        android:textSize="27sp"
+        android:textColor="@android:color/white"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/authenticate_text" />
+
+    <Button
+        android:layout_gravity="center"
+        android:layout_marginTop="80dp"
+        android:id="@+id/btn_authenticate"
+        android:text="Authenticate"
+        android:textColor="@drawable/text_auth"
+        android:background="@drawable/btn_auth"
+        android:paddingTop="20dp"
+        android:paddingBottom="20dp"
+        android:paddingLeft="60dp"
+        android:paddingRight="60dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
+
+    <TextView
+        android:gravity="center"
+        android:textColor="@android:color/white"
+        android:layout_marginTop="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fontFamily="sans-serif-light"
+        android:text="@string/welcome_hint"/>
+
+</LinearLayout>

@@ -9,7 +9,7 @@ import android.content.SharedPreferences;
 public class PrefsWrapper {
     public final String SHARED_PRES="SNDWN";
     SharedPreferences mSharedPrefs;
-    Context context;
+    PrefsWrapper prefsWrapper;
 
 
     final String IS_LOGGED_IN = "IS_LOGGED_IN";
@@ -23,7 +23,6 @@ public class PrefsWrapper {
 
 
     public PrefsWrapper(Context context){
-        this.context=context;
         mSharedPrefs=context.getSharedPreferences(SHARED_PRES,Context.MODE_PRIVATE);
     }
 

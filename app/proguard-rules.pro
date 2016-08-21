@@ -16,3 +16,8 @@
 #   public *;
 #}
 -keep class android.support.v7.widget.SearchView { *; }
+-keep public class * implements com.bumptech.glide.module.GlideModule
+-keep public enum com.bumptech.glide.load.resource.bitmap.ImageHeaderParser$** {
+  **[] $VALUES;
+  public *;
+}

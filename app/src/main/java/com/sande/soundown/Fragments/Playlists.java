@@ -21,7 +21,6 @@ import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Network.VolleySingleton;
 import com.sande.soundown.R;
 import com.sande.soundown.Utils.PrefsWrapper;
-import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,6 +53,12 @@ public class Playlists extends Fragment implements ApiCons{
         RecyclerView mRecy=(RecyclerView)mView.findViewById(R.id.rv_fp);
         box=new DynamicBox(getContext(),mRecy);
         box.showLoadingLayout();
+        box.setClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                getPlaylists();
+            }
+        });
         mAdapter=new PlaylistsAdapter(getContext());
         final LinearLayoutManager mLLM=new LinearLayoutManager(getContext());
         mRecy.setAdapter(mAdapter);

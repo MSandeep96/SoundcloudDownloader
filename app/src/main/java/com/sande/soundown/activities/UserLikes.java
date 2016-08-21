@@ -1,16 +1,14 @@
 package com.sande.soundown.activities;
 
-import android.app.Activity;
 import android.app.DownloadManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
-import android.os.Environment;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -38,7 +36,6 @@ import com.sande.soundown.Utils.UtilsManager;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.w3c.dom.Text;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -207,7 +204,7 @@ public class UserLikes extends AppCompatActivity implements ApiCons,HasTrackAdap
         Uri downUri=Uri.parse(url);
         DownloadManager.Request req=new DownloadManager.Request(downUri);
         req.setTitle(fileName);
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
+        req.setDestinationUri(UtilsManager.getDestinationUri(song));
         DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadRef=mDownloadManager.enqueue(req);
         downloadingItems.put(downloadRef,song);

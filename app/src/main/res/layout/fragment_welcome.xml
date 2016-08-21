@@ -1,0 +1,36 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:fitsSystemWindows="false"
+    android:background="@drawable/welcome_gradient"
+    tools:context="com.sande.soundown.Fragments.WelcomeFragment">
+
+    <TextView
+        android:layout_marginTop="70dp"
+        android:id="@+id/welcome_tv_title"
+        android:gravity="center_horizontal"
+        android:textSize="40sp"
+        android:text="SOUNDOWN"
+        android:textColor="@android:color/white"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="40dp"
+        android:layout_marginRight="40dp"
+        android:layout_height="wrap_content" />
+    <ImageView
+        android:layout_marginTop="60dp"
+        android:id="@+id/welcome_iv_squ"
+        android:layout_width="wrap_content"
+        android:layout_height="240dp" />
+    <TextView
+        android:layout_marginTop="40dp"
+        android:text="@string/welcome_screen_text"
+        android:fontFamily="sans-serif-light"
+        android:textSize="16sp"
+        android:textColor="@android:color/white"
+        android:gravity="center"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
+</LinearLayout>

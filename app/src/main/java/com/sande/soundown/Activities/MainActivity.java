@@ -1,35 +1,31 @@
 package com.sande.soundown.activities;
 
 import android.app.DownloadManager;
-import android.app.SearchManager;
 import android.content.BroadcastReceiver;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Environment;
-import android.os.UserManager;
-import android.support.v4.app.DialogFragment;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
 import com.gigamole.library.NavigationTabBar;
 import com.sande.soundown.DialogFragments.DetailedFragment;
 import com.sande.soundown.Fragments.Feeds;
-import com.sande.soundown.Fragments.Tracks;
 import com.sande.soundown.Fragments.Playlists;
 import com.sande.soundown.Fragments.Profile;
+import com.sande.soundown.Fragments.Tracks;
 import com.sande.soundown.GsonFiles.TrackObject;
 import com.sande.soundown.Interfaces.ApiCons;
 import com.sande.soundown.Interfaces.CallBackMain;
@@ -43,6 +39,8 @@ import com.sande.soundown.services.SetTags;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import io.fabric.sdk.android.Fabric;
+
 public class MainActivity extends AppCompatActivity implements CallBackMain,HasTrackAdapter {
 
     private ViewPager mViewpager;
@@ -50,17 +48,19 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     private HashMap<Long,TrackObject> downloadingItems=new HashMap<>();
     private BroadcastReceiver notificationClicked;
     private BroadcastReceiver downloadComplete;
+    private static final String KEY_DOWNLOADING_ITEMS = "DOWNLOADING_ITEMS";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Fabric.with(this, new Crashlytics());
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         prefsWrapper=new PrefsWrapper(this);
         getSupportActionBar().setTitle("Soundown");
         if(!prefsWrapper.isLoggedIn()){
-            Intent mIntent=new Intent(this,LoginActivity.class);
+            Intent mIntent=new Intent(this,WelcomeActivity.class);
             startActivity(mIntent);
             finish();
         }
@@ -76,6 +76,9 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         mViewpager.setAdapter(mAdapter);
         mViewpager.setOffscreenPageLimit(5);
         ntb.setViewPager(mViewpager);
+        if(savedInstanceState!=null){
+            downloadingItems= (HashMap<Long, TrackObject>) savedInstanceState.getSerializable(KEY_DOWNLOADING_ITEMS);
+        }
     }
 
     @Override
@@ -105,7 +108,6 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
                     startService(mInte);
                 }
                 downloadingItems.remove(reference);
-                // TODO: 24-05-2016 remove reference from hashmap
             }
         };
         IntentFilter completeFilter=new IntentFilter(DownloadManager.ACTION_DOWNLOAD_COMPLETE);
@@ -120,6 +122,13 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         if(mDial!=null){
             ((DetailedFragment)mDial).downloadComplete();
         }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        outState.putSerializable(KEY_DOWNLOADING_ITEMS,downloadingItems);
+
     }
 
     @Override
@@ -150,9 +159,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }else if(id==R.id.search){
+        if(id==R.id.search){
             Intent mInte=new Intent(this,SearchActivity.class);
             startActivity(mInte);
         }
@@ -191,7 +198,7 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
         Uri downUri=Uri.parse(url);
         DownloadManager.Request req=new DownloadManager.Request(downUri);
         req.setTitle(fileName);
-        req.setDestinationInExternalPublicDir(Environment.DIRECTORY_MUSIC,UtilsManager.getSongStorDir(fileName));
+        req.setDestinationUri(UtilsManager.getDestinationUri(song));
         DownloadManager mDownloadManager=(DownloadManager)getSystemService(Context.DOWNLOAD_SERVICE);
         long downloadRef=mDownloadManager.enqueue(req);
         downloadingItems.put(downloadRef,song);
@@ -209,10 +216,10 @@ public class MainActivity extends AppCompatActivity implements CallBackMain,HasT
     }
 
 
-   
-   
-   
-   
+
+
+
+
     //FragAdapter
     class MyFragAdapter extends FragmentStatePagerAdapter implements ApiCons{
 

@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Build;
-import android.os.SystemClock;
-import android.support.v4.util.TimeUtils;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -19,20 +17,15 @@ import com.sande.soundown.Utils.UtilsManager;
 
 import org.jaudiotagger.audio.AudioFile;
 import org.jaudiotagger.audio.AudioFileIO;
-import org.jaudiotagger.audio.exceptions.CannotReadException;
 import org.jaudiotagger.audio.exceptions.CannotWriteException;
-import org.jaudiotagger.audio.exceptions.InvalidAudioFrameException;
-import org.jaudiotagger.audio.exceptions.ReadOnlyFileException;
 import org.jaudiotagger.tag.FieldKey;
 import org.jaudiotagger.tag.Tag;
-import org.jaudiotagger.tag.TagException;
 import org.jaudiotagger.tag.TagOptionSingleton;
 import org.jaudiotagger.tag.datatype.Artwork;
 import org.jaudiotagger.tag.id3.ID3v23Tag;
 
 import java.io.File;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -44,14 +37,16 @@ import java.util.Date;
  */
 public class SetTags extends IntentService {
 
+    private TrackObject mObj;
+
     public SetTags() {
         super("SetTags");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-        TrackObject mObj=intent.getParcelableExtra(ProjectConstants.TRACKOBJECT);
-        final File mFile= UtilsManager.getSongFile(mObj.getTitle());
+        mObj=intent.getParcelableExtra(ProjectConstants.TRACKOBJECT);
+        final File mFile= UtilsManager.getDestinationFile(mObj);
         TagOptionSingleton.getInstance().setAndroid(true);
         try {
             final AudioFile audioFile= AudioFileIO.read(mFile);
@@ -126,7 +121,7 @@ public class SetTags extends IntentService {
                 mediaScanIntent.setData(contentUri);
                 context.sendBroadcast(mediaScanIntent);
             } else {
-                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" +  UtilsManager.getSongStorageDir())));
+                context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + UtilsManager.getContainingFolder(mObj.getUser().getUsername()))));
             }
         } catch (CannotWriteException e) {
             e.printStackTrace();
